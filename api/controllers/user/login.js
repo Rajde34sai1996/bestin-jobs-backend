@@ -34,35 +34,10 @@ module.exports = {
       });
     }
     let compare = await bcrypt.compare(inputs.password, userDetails.password)
-    console.log("🚀 ~ file: login.js:37 ~ compare:", compare)
     if (compare) {
-      if (!userDetails.is_email_verified) {
-        return exits.success({
-          success: false,
-          message: this.res.locals.__("You have entered wrong email."),
-        });
-      } else if (userDetails.user_type === "admin") {
-        if (userDetails.is_blocked) {
-          return exits.success({
-            success: false,
-            message: this.res.locals.__(
-              "Your account is blocked. Contact admin for more info."
-            ),
-          });
-        }
-      } else if (userDetails.user_type === "user") {
-        if (userDetails.is_blocked) {
-          return exits.success({
-            success: false,
-            message: this.res.locals.__(
-              "Your account is blocked. Contact admin for more info."
-            ),
-          });
-        }
-      }
       var token = jwt.sign(
         {
-          user: userDetails.id,
+          user: userDetails,
         },
         sails.config.jwtSecret,
         {
