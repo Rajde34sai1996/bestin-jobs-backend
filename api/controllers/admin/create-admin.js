@@ -1,9 +1,9 @@
+const bcrypt = require("bcryptjs");
 const random = require("random-key");
-var bcrypt = require("bcryptjs");
 module.exports = {
   friendlyName: "Create",
 
-  description: "Create Basic QURP Account .",
+  description: "Create Admin.",
 
   inputs: {
     name: {
@@ -31,10 +31,13 @@ module.exports = {
       required: true,
     },
   },
-
   exits: {
     invalid: {
       statusCode: 409,
+      description: "firstname, lastname, email and password is required.",
+    },
+    redirect: {
+      responseType: "redirect",
     },
   },
 
@@ -59,7 +62,7 @@ module.exports = {
         name: inputs.name.trim(),
         email,
         password,
-        user_type: "user",
+        user_type: "admin",
         token: random.generateDigits(4),
         phone_no: inputs.phone_no,
         phone_code: inputs.phone_code,

@@ -16,23 +16,23 @@ module.exports.policies = {
    *                                                                          *
    ***************************************************************************/
   // "*": true,
-  "email-template/create": "isAuthenticated",
-  "email-template/index": "isAuthenticated",
-  "email-template/update": "isAuthenticated",
-  "email-template/delete": "isAuthenticated",
+  //Email template
+  "email-template/create": "isAuthenticatedAdmin",
+  "email-template/index": "isAuthenticatedAdmin",
+  "email-template/update": "isAuthenticatedAdmin",
+  "email-template/delete": "isAuthenticatedAdmin",
 
-  "services/create": "isAuthenticated",
-  "services/index": "isAuthenticated",
-  "services/update": "isAuthenticated",
-  "services/delete": "isAuthenticated",
+  //Service
+  "services/create": "isAuthenticatedAdmin",
+  "services/index": "isAuthenticatedAdmin",
+  "services/update": "isAuthenticatedAdmin",
+  "services/delete": "isAuthenticatedAdmin",
 
-  "api/getUserData": "isAuthenticated",
-  "user/update-admin": "isAuthenticated",
-  "user/change-password": "isAuthenticated",
-  "user/update-avatar": "isAuthenticated",
-  "user/create-admin": "isAuthenticated",
-  "user/get-admin": "isAuthenticated",
-  "user/delete": "isAuthenticated",
-  "user/block-un-block": "isAuthenticated",
-  "user/connect": "isAuthenticated",
+  //Cms
+  "cms/create": "isAuthenticatedAdmin",
+  "cms/delete": "isAuthenticatedAdmin",
+  "cms/update": "isAuthenticatedAdmin",
+  "cms/list": "isAuthenticatedAdmin", 
+
+  
 };

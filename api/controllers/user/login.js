@@ -26,7 +26,6 @@ module.exports = {
     var userDetails = await Users.findOne({
       email: inputs.email,
     });
-    console.log("🚀 ~ file: login.js:29 ~ userDetails:", userDetails)
     if (!userDetails) {
       return exits.success({
         success: false,

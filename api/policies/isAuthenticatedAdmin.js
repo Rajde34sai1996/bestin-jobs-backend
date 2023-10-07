@@ -9,7 +9,7 @@
  */
 
 module.exports = async function (req, res, next) {
-  sails.helpers.verifyJwt
+  sails.helpers.verifyJwtAdmin
     .with({
       req: req,
       res: res,

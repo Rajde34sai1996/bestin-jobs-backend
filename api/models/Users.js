@@ -22,7 +22,7 @@ module.exports = {
       protect: true,
       allowNull: true,
     },
-    phone: {
+    phone_no: {
       type: "string",
       allowNull: true,
     },
@@ -73,26 +73,4 @@ module.exports = {
       isIn: [0, 1],
     },
   },
-
-  // customToJSON: function () {
-  //   return _.omit(this, ["password"]);
-  // },
-  // beforeCreate: function (user, cb) {
-  //   if (user.password) {
-  //     bcrypt.genSalt(10, function (err, salt) {
-  //       bcrypt.hash(user.password, salt, function (err, hash) {
-  //         if (err) {
-  //           console.log(err);
-  //           cb(err);
-  //         } else {
-  //           user.password = hash;
-  //           console.log("saving data --> " + user.password);
-  //           cb();
-  //         }
-  //       });
-  //     });
-  //   } else {
-  //     cb();
-  //   }
-  // },
 };

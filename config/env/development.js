@@ -1,7 +1,7 @@
 module.exports = {
   mode: "development",
   jwtSecret: "qurp@2021",
-  jwtExpires: 18000,
+  jwtExpires: 86400,
   bucket: "",
   endPoint: "",
   region: "",
