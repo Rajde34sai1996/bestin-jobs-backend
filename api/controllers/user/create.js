@@ -1,5 +1,5 @@
 const random = require("random-key");
-var bcrypt = require("bcryptjs");
+let bcrypt = require("bcryptjs");
 module.exports = {
   friendlyName: "Create",
 
@@ -40,8 +40,8 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      var email = inputs.email.trim();
-      var checkUser = await Users.count({
+      let email = inputs.email.trim();
+      let checkUser = await Users.count({
         email,
       });
       if (checkUser) {
@@ -50,12 +50,17 @@ module.exports = {
           success: false,
         });
       }
-
-      var password = await bcrypt.hash(
+      let settingObj = {
+        allowAll: false,
+        jobAlerts: false,
+        jobApplication: false,
+        appUpdates: false,
+      };
+      let password = await bcrypt.hash(
         inputs.password,
         await bcrypt.genSalt(10)
       );
-      var createUser = await Users.create({
+      let createUser = await Users.create({
         name: inputs.name.trim(),
         email,
         password,
@@ -63,6 +68,7 @@ module.exports = {
         token: random.generateDigits(4),
         phone_no: inputs.phone_no,
         phone_code: inputs.phone_code,
+        setting: JSON.stringify(settingObj)
       }).fetch();
       if (createUser) {
         // mailer.sendVerificationCode(email, createUser.token);
@@ -77,7 +83,7 @@ module.exports = {
         });
       }
     } catch (error) {
-      await general.errorLog(error, "admin/create-admin");
+      await general.errorLog(error, "user/create");
       return exits.success({
         success: false,
         message: "Somethinng want wrong!",

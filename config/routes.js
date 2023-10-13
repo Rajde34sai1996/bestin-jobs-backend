@@ -20,7 +20,7 @@ module.exports.routes = {
 
   "/": { view: "pages/homepage" },
   "GET /api/test": "ApiController.test",
-  "GET /api/test-notification": "ApiController.testNotification",
+  "POST /api/test-notification": "ApiController.testNotification",
 
   // Email Template
   "POST /api/email-template/create": { action: "email-template/create" },
@@ -31,8 +31,9 @@ module.exports.routes = {
   // User
   "POST /api/user/login": { action: "user/login" },
   "POST /api/user/get-data": "ApiController.getUserData",
-  "POST /api/user/change-password": { action: "user/change-password" },
   "POST /api/user/update-avatar": { action: "user/update-avatar" },
+  'POST /api/user/forgot-password': { action: 'user/forgot-password' },
+  'POST /api/user/chnage-password': { action: 'user/change-password' },
 
   //Admin
   "POST /api/admin/create-admin": { action: "admin/create-admin" },
@@ -42,7 +43,6 @@ module.exports.routes = {
 
   "POST /api/user/delete": { action: "user/delete" },
   "POST /api/user/block-un-block": { action: "user/block-un-block" },
-  "POST /api/user/set-password": { action: "user/set-password" },
   "POST /api/user/connect": { action: "user/connect" },
   "POST /api/user/create": { action: "user/create" },
   "POST /api/user/verify-email": "ApiController.verifyEmail",
@@ -60,6 +60,8 @@ module.exports.routes = {
   'POST /api/cms/delete': { action: 'cms/delete' },
   'GET /api/cms/list': { action: 'cms/list' },
 
+  //OTP
+  'POST /api/otp/create': { action: 'otp/create' },
 
   /***************************************************************************
    *                                                                          *

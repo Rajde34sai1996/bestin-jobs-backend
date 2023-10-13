@@ -34,5 +34,7 @@ module.exports.policies = {
   "cms/update": "isAuthenticatedAdmin",
   "cms/list": "isAuthenticatedAdmin", 
 
+  "user/change-password": "isAuthenticatedUser"
+
   
 };

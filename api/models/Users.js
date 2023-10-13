@@ -72,5 +72,8 @@ module.exports = {
       defaultsTo: 0, // 1 = verified | 0 = not verified
       isIn: [0, 1],
     },
+    setting: {
+      type: "json"
+    }
   },
 };

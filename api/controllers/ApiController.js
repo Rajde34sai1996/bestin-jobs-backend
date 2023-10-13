@@ -18,16 +18,44 @@ module.exports = {
   },
 
   testNotification: async function (req, res) {
-    const param = req.allParams();
-    await events.sendEvent(1, {
-      status: param.status,
-      type: param.type,
-      title: param.title,
-      description: param.description,
-    });
-    return res.ok({
-      success: true,
-    });
+    try {
+      let { user_id, allowAll, jobAlerts, jobApplication, appUpdates } =
+        req.body;
+      let findUser = await Users.findOne({ id: user_id });
+      if(!findUser) {
+        return res.json({ succes: false, message: "User not found!" });
+      }
+      let setting = JSON.parse(findUser.setting)
+      if(allowAll){
+        setting.allowAll = true
+        setting.jobAlerts = true
+        setting.jobApplication = true
+        setting.appUpdates = true
+      } else if (jobAlerts) {
+        setting.jobAlerts = true
+      } else if (jobApplication) {
+        setting.jobApplication = true
+      } else if (appUpdates) {
+        setting.appUpdates = true
+      }
+      let createNotification = await Notification.create({
+        sender_id: 1,
+        receiver_id: findUser.id,
+        data: JSON.stringify(setting),
+      }).fetch()
+
+      let updateUser = await Users.updateOne({ id: user_id }).set({
+        setting: JSON.stringify(setting),
+      });
+
+      return res.json({ status: true, message: "Notification send!" });
+    } catch (error) {
+      await general.errorLog(error, "ApiController/testNotification");
+      return res.json({
+        success: false,
+        message: "Somethinng want wrong!",
+      });
+    }
   },
 
   getUserData: async function (req, res) {
