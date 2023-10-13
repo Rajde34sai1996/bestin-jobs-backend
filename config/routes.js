@@ -64,6 +64,8 @@ module.exports.routes = {
 
   //OTP
   'POST /api/otp/create': { action: 'otp/create' },
+  'POST /api/otp/send-otp': { action: 'otp/send-otp' },
+  'POST /api/otp/check-otp': { action: 'otp/check-otp' },
 
   /***************************************************************************
    *                                                                          *
