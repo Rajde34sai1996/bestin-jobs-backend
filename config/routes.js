@@ -20,7 +20,9 @@ module.exports.routes = {
 
   "/": { view: "pages/homepage" },
   "GET /api/test": "ApiController.test",
-  "POST /api/test-notification": "ApiController.testNotification",
+  "GET /api/test-notification": "ApiController.testNotification",
+  "POST /api/test-upload": "ApiController.upload",  // Email Template
+
 
   // Email Template
   "POST /api/email-template/create": { action: "email-template/create" },

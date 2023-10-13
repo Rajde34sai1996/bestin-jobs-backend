@@ -48,7 +48,7 @@ module.exports.datastores = {
     // adapter: 'sails-mysql',
     // url: 'mysql://user:password@host:port/database',
     adapter: require("sails-mysql"),
-    url: "mysql://root:@localhost/qurp", //Rahulbhai localhost db
+    url: "mysql://root:@localhost/bestin_jobs",
     connectTimeout: 20000,
   },
 };

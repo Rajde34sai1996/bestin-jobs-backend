@@ -46,6 +46,7 @@ module.exports = {
       }
 
       return exits.success({
+        success: true,
         message: "CMS item updated successfully",
         updatedCmsItem,
       });

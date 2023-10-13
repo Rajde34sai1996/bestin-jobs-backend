@@ -88,11 +88,21 @@ module.exports = {
       });
     }
   },
-  test: async function (req, res){
+  test: async function (req, res) {
     const done = await Mymodel.find();
     return res.ok({
       success: true,
       done,
     });
+  },
+  upload: function(req, res) {
+    // Access uploaded file details using req.file
+    var uploadedFile = req.file;
+    console.log("uploadedFile", uploadedFile);
+
+    // Do something with the uploaded file, e.g., save it to a database or return a response
+    return res.json({ message: 'File uploaded successfully', file: uploadedFile });
   }
+  
 };
+  

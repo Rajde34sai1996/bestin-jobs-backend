@@ -32,5 +32,6 @@
 	"User already exists.": "User already exists.",
 	"Account has been verified successfully.": "Account has been verified successfully.",
 	"Invalid code.": "Invalid code.",
-	"Email template has been deleted successfully.": "Email template has been deleted successfully."
+	"Email template has been deleted successfully.": "Email template has been deleted successfully.",
+	"Send OTP on your number.": "Send OTP on your number."
 }
