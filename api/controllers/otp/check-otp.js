@@ -19,7 +19,6 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       let checkOtpData = await general.checkOtp(inputs.to, inputs.otp);
-      console.log("🚀 ~ file: check-otp.js:22 ~ checkOtpData:", checkOtpData)
       if(checkOtpData.success) {
         return exits.success({ success: true, message: "OTP verified" });
       } else {
@@ -29,8 +28,7 @@ module.exports = {
         });
       }
     } catch (error) {
-      console.log("🚀 ~ file: check-otp.js:31 ~ error:", error)
-      // await general.errorLog(error, "otp/check-otp");
+      await general.errorLog(error, "otp/check-otp");
       return exits.success({
         success: false,
         message: "Somethinng want wrong!",

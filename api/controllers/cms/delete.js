@@ -28,8 +28,7 @@ module.exports = {
 
       return exits.success({ success: false, message: "CMS item deleted successfully" });
     } catch (error) {
-      console.log("🚀 ~ file: delete.js:31 ~ error:", error)
-      // await general.errorLog(error, "cms/delete");
+      await general.errorLog(error, "cms/delete");
       return exits.success({
         success: false,
         message: "Somethinng want wrong!",

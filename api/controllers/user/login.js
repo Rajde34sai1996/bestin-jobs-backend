@@ -58,7 +58,11 @@ module.exports = {
         });
       }
     } catch (error) {
-      // console.log("🚀 ~ file: login.js:61 ~ error:", error);
+      await general.errorLog(error, "user/login");
+      return exits.success({
+        success: false,
+        message: "Somethinng want wrong!",
+      });
     }
   },
 };
