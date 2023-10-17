@@ -48,7 +48,8 @@ module.exports.datastores = {
     // adapter: 'sails-mysql',
     // url: 'mysql://user:password@host:port/database',
     adapter: require("sails-mysql"),
-    url: "mysql://root:@localhost/bestin_jobs",
+    // url: "mysql://root:@localhost/migration_testing", //For migration testing
+    url: "mysql://root:@localhost/best_in_jobs", //Ankit Local Db
     connectTimeout: 20000,
   },
 };

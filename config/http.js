@@ -21,7 +21,10 @@ module.exports.http = {
     })(),
 
     filemiddleware: function (req, res, next) {
-      upload.single('file')(req, res, function (err) {
+      upload.fields([
+        { name: 'image1', maxCount: 1 },
+        { name: 'image2', maxCount: 1 },
+      ])(req, res, function (err) {
         if (err) {
           console.log("err", err);
           return res.serverError(err);

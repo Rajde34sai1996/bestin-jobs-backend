@@ -4,31 +4,59 @@ module.exports = {
   description: "Create otp.",
 
   inputs: {
-    user_id: {
-      type: "number",
+    verify_by: {
+      type: "string",
       required: true,
     },
+    type: {
+      type: "string",
+      default: "join"
+    }
   },
 
   exits: {},
 
   fn: async function (inputs, exits) {
     try {
-      let findUser = await Otp.findOne({
-        user_id: inputs.user_id,
-      });
-      let getOtp = await general.generateRandom6DigitNumber();
-      if (findUser) {
-        await Otp.update({ user_id: findUser.user_id }).set({ otp: getOtp });
-      } else {
-        await Otp.create({ user_id: inputs.user_id, otp: getOtp });
+      if(inputs.type == "join") {
+        let userDetails = await Users.findOne({
+          phone_number: inputs.verify_by,
+        });
+        if (userDetails) {
+          return exits.success({
+            success: false,
+            message: this.res.locals.__("You have a account please login"),
+          });
+        }
       }
-      return exits.success({
-        message: this.res.locals.__("Send OTP on your number."),
-        success: true,
-      });
+      const { otp, timestamp } = await general.generateOTPWithTimestamp();
+      let sendOtp = await general.sendOtp(inputs.verify_by, otp);
+      if (!sendOtp.success) {
+        return exits.success({
+          success: false,
+          message: "Something went wrong while creating otp.",
+        });
+      }
+      let createOtp = await Otp.create({
+        verify_by: inputs.verify_by,
+        otp,
+        expire_time: timestamp,
+      }).fetch();
+      if (createOtp) {
+        return exits.success({
+          success: true,
+          message: "OTP sent and expire in 2 minit.",
+          data: createOtp,
+        });
+      } else {
+        return exits.success({
+          success: false,
+          message: "Something went wrong while creating otp.",
+        });
+      }
     } catch (error) {
-      await general.errorLog(error, "otp/create");
+      console.log("🚀 ~ file: create.js:35 ~ error:", error);
+      // await general.errorLog(error, "otp/create");
       return exits.success({
         success: false,
         message: "Somethinng want wrong!",

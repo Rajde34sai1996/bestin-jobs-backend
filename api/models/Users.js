@@ -8,10 +8,6 @@ const bcrypt = require("bcryptjs");
 module.exports = {
   fetchRecordsOnUpdate: true,
   attributes: {
-    name: {
-      type: "string",
-      allowNull: true,
-    },
     email: {
       type: "string",
       required: true,
@@ -22,58 +18,38 @@ module.exports = {
       protect: true,
       allowNull: true,
     },
-    phone_no: {
+    name: {
       type: "string",
-      allowNull: true,
+      allowNull: false,
     },
-    phone_code: {
+    dob: {
       type: "string",
+      allowNull: false,
     },
-    street: {
+    gender: {
       type: "string",
-      allowNull: true,
+      isIn: ["male", "female", "other"],
+      allowNull: false,
     },
-    post_code: {
-      type: "number",
-      allowNull: true,
-    },
-    city: {
+    phone_number: {
       type: "string",
-      allowNull: true,
+      allowNull: false,
     },
     country: {
       type: "string",
-      allowNull: true,
+      allowNull: false,
     },
-    country_code: {
-      type: "string",
-      allowNull: true,
-    },
-    user_type: {
+    role: {
       type: "string",
       isIn: ["admin", "user"],
-      allowNull: true,
-    },
-    avatar: {
-      type: "string",
-      allowNull: true,
-    },
-    is_blocked: {
-      type: "number",
-      defaultsTo: 0, // 1 = block | 0 = unblock
-      isIn: [1, 0],
-    },
-    token: {
-      type: "string",
-      allowNull: true,
-    },
-    is_email_verified: {
-      type: "number",
-      defaultsTo: 0, // 1 = verified | 0 = not verified
-      isIn: [0, 1],
+      allowNull: false,
     },
     setting: {
-      type: "json"
-    }
+      type: "json",
+    },
+    profile_pic: {
+      type: "string",
+      allowNull: true,
+    },
   },
 };

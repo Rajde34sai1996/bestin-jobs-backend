@@ -31,11 +31,13 @@ module.exports.routes = {
   "POST /api/email-template/delete": { action: "email-template/delete" },
 
   // User
+  'POST /api/user/sign-up': { action: 'user/sign-up' },
   "POST /api/user/login": { action: "user/login" },
   "POST /api/user/get-data": "ApiController.getUserData",
   "POST /api/user/update-avatar": { action: "user/update-avatar" },
   'POST /api/user/forgot-password': { action: 'user/forgot-password' },
   'POST /api/user/chnage-password': { action: 'user/change-password' },
+  'POST /api/user/more-about-user': { action: 'user/more-about-user' },
 
   //Admin
   "POST /api/admin/create-admin": { action: "admin/create-admin" },
@@ -64,8 +66,10 @@ module.exports.routes = {
 
   //OTP
   'POST /api/otp/create': { action: 'otp/create' },
+  'POST /api/otp/verify-otp': { action: 'otp/verify-otp' },
   'POST /api/otp/send-otp': { action: 'otp/send-otp' },
   'POST /api/otp/check-otp': { action: 'otp/check-otp' },
+
 
   /***************************************************************************
    *                                                                          *

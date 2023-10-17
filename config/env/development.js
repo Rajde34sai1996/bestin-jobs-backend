@@ -9,7 +9,7 @@ module.exports = {
   port: 2898,
 
   //OTP Verification tokens of Ankit account
-  accountSid: "ACfc78368100767fcdf2fe43c0421c98e4",
-  authToken: "34b5b841a1bafc1621baf3c1cfd184f3",
+  accountSid: "AC30cb336bb37f9d45ca3c63b421337782",
+  authToken: "2685024f6ad6426dec8709f7ef19e3dc",
   verifySid: "VA03af6449cdf478c513335f84ebc1132c",
 };

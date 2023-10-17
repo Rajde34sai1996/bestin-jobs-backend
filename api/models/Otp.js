@@ -6,17 +6,22 @@
  */
 
 module.exports = {
-
   attributes: {
-    user_id: {
-      type: "number",
-      allowNull: false,
+    verify_by: {
+      type: "string",
+      required: true,
     },
     otp: {
       type: "number",
-      allowNull: false,
-    }
+      required: true,
+    },
+    expire_time: {
+      type: "number",
+      required: true,
+    },
+    // Disable automatic timestamps
+    updatedAt: false,
+    createdAt: false,
   },
-
 };
 

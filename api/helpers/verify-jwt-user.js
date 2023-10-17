@@ -42,7 +42,7 @@ module.exports = {
           // console.log(payload.user);
           var user = await Users.findOne({
             id: payload.user.id,
-            user_type: "user",
+            role: "user",
           });
           if (!user) return exits.invalid();
           req.user = user;

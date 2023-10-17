@@ -30,34 +30,42 @@ module.exports = {
     });
   },
 
-  generateRandom6DigitNumber: async function () {
-    const min = 100000; // Smallest 6-digit number
-    const max = 999999; // Largest 6-digit number
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+  /**
+   * 
+   * @returns otp and
+   */
+  generateOTPWithTimestamp: async function () {
+    const chars = '0123456789';
+    const length = 6
+    let otp = '';
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * chars.length);
+      otp += chars[randomIndex];
+    }
+    const timestamp = Date.now() + 2 * 60 * 1000;
+    return { otp, timestamp };
   },
+  
 
   /**
    * This function is used to send the otp
    * @param {to} to send the phone number
    * @returns { success: true}
    */
-  sendOtp: async function (to) {
+  sendOtp: async function (to, otp) {
     try {
       const accountSid = sails.config.accountSid;
       const authToken = sails.config.authToken;
-      const verifySid = sails.config.verifySid;
       const client = twilio(accountSid, authToken);
-      const verification = await client.verify.v2
-        .services(verifySid)
-        .verifications.create({
-          to,
-          channel: "sms",
-          ttl: 60, // Set the OTP expiration time to 60 seconds (1 minute)
-        });
-
-      return { success: true, data: verification };
+      const message = await client.messages.create({
+        body: `Your OTP is: ${otp}`,
+        from: '+19382223668', 
+        to,
+      });
+      return { success: true, data: message };
     } catch (error) {
-      this.errorLog(error, "services/sendOtp");
+      console.log("🚀 ~ file: general.js:67 ~ error:", error)
+      // this.errorLog(error, "services/sendOtp");
       return {
         succes: false,
         message: error.message,

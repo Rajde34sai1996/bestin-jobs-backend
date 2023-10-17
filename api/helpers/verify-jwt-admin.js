@@ -40,7 +40,10 @@ module.exports = {
         async function (err, payload) {
           if (err || !payload.user) return exits.invalid();
           // console.log(payload.user);
-          var user = await Users.findOne({ id: payload.user.id, user_type: "admin" });
+          var user = await Users.findOne({
+            id: payload.user.id,
+            role: "admin",
+          });
           if (!user) return exits.invalid();
           req.user = user;
           return exits.success(user);
