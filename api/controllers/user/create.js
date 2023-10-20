@@ -30,6 +30,14 @@ module.exports = {
       type: "string",
       required: true,
     },
+    dob: {
+      type: "string",
+      required: true
+    },
+    gender: {
+      type: "string",
+      required: true
+    }
   },
 
   exits: {
@@ -66,8 +74,11 @@ module.exports = {
         password,
         user_type: "user",
         token: random.generateDigits(4),
-        phone_no: inputs.phone_no,
+        phone_number: inputs.phone_no,
         phone_code: inputs.phone_code,
+        dob: inputs.dob,
+        gender: inputs.gender,
+        role: "user",
         setting: JSON.stringify(settingObj)
       }).fetch();
       if (createUser) {

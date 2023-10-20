@@ -10,7 +10,7 @@ module.exports = {
     },
     type: {
       type: "string",
-      default: "join"
+      defaultsTo: "join"
     }
   },
 
@@ -55,8 +55,7 @@ module.exports = {
         });
       }
     } catch (error) {
-      console.log("🚀 ~ file: create.js:35 ~ error:", error);
-      // await general.errorLog(error, "otp/create");
+      await general.errorLog(error, "otp/create");
       return exits.success({
         success: false,
         message: "Somethinng want wrong!",
