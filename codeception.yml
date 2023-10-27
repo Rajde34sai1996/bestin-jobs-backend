@@ -6,4 +6,4 @@ include:
 paths:
     output: console/runtime/output
 settings:
-    colors: true
+    colors: true 
