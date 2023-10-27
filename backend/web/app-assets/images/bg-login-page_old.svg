@@ -1,0 +1,25 @@
+<svg version="1.2" baseProfile="tiny-ps" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 6395 1079" width="6395" height="1079">
+	<title>bg-login-page-svg</title>
+	<defs>
+		<clipPath clipPathUnits="userSpaceOnUse" id="cp1">
+			<path d="M0 0L6395 0L6395 1079L0 1079L0 0Z" />
+		</clipPath>
+		<linearGradient id="grd1" gradientUnits="userSpaceOnUse"  x1="4761.075" y1="254.451" x2="6201.42" y2="925.815">
+			<stop offset="0" stop-color="#193441"  />
+			<stop offset="1" stop-color="#193441"  />
+		</linearGradient>
+	</defs>
+	<style>
+		tspan { white-space:pre }
+		.shp0 { fill: #f1f5f8 } 
+		.shp1 { fill: url(#grd1) } 
+	</style>
+	<g id="Clip-Path: Mask_Group_1" clip-path="url(#cp1)">
+		<g id="Mask_Group_1">
+			<g id="Group_118">
+				<path id="Path_142" class="shp0" d="M6367.02 -7.3C6367.02 -7.3 6144.54 180.51 6311.67 575.95C6356.63 682.33 6393.18 781.92 6396.19 852.95C6404.35 1045.72 6240.14 1121.52 6240.14 1121.52L5586.61 1094.72L5570.35 -22.75L6367.02 -7.3Z" />
+				<path id="Union_6" class="shp1" d="M5600.09 1081.48L5600.09 1079.88L0.29 1079.88L0.29 -0.3L5600.09 -0.3L5600.09 -0.32L6359.79 -0.32C6359.79 -0.32 6171.95 197.13 6268.17 488.52C6317.33 637.42 6364.47 744.81 6372.85 850.64C6380.83 951.49 6314.87 1052.35 6204.2 1104.92C6138.35 1136.21 6059.65 1147.31 5981.18 1147.31C5789.99 1147.31 5600.09 1081.48 5600.09 1081.48Z" />
+			</g>
+		</g>
+	</g>
+</svg>

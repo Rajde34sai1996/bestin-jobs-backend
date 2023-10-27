@@ -1,0 +1,11 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "J8343X83NH.groovy.DiscreetLobby.user",
+        "paths": ["*"]
+      }
+    ]
+  }
+}
