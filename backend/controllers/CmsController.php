@@ -27,12 +27,12 @@ class CmsController extends Controller
                     [
                         'actions' => ['create','update','delete','index'],
                         'allow' => true,
-                        // 'roles' => ['admin'],
+                        'roles' => ['@'],
                     ],
                     [
                         'actions' => ['index','update'],
                         'allow' => true,
-                        // 'roles' => ['staff'],
+                        'roles' => ['@'],
                     ],
                 ],
             ],
@@ -40,6 +40,7 @@ class CmsController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
+                    'roles' => ['@'],
                 ],
             ],
         ];

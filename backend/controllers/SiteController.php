@@ -8,6 +8,7 @@ use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\Response;
+
 /**
  * Site controller
  */
@@ -24,18 +25,13 @@ class SiteController extends Controller
                 'rules' => [
                     [
                         'actions' => ['login', 'error'],
-                        'allow' => true,
+                        'allow' => true
                     ],
                     [
-                        'actions' => ['logout', 'index'],
+                        'actions' => ['index','logout'],
                         'allow' => true,
-                    ],
-                ],
-            ],
-            'verbs' => [
-                'class' => VerbFilter::class,
-                'actions' => [
-                    'logout' => ['post'],
+                        'roles' => ['@'],
+                    ]
                 ],
             ],
         ];
@@ -59,7 +55,7 @@ class SiteController extends Controller
      * @return string
      */
     public function actionIndex()
-    {   
+    {
         if (Yii::$app->user->isGuest) {
             return $this->redirect(['site/login']);
         }
@@ -72,10 +68,12 @@ class SiteController extends Controller
      * @return string|Response
      */
     public function actionLogin()
-    {   
-        
-        if (Yii::$app->user->isGuest) {
-            return $this->redirect(['site/login']);
+    {
+
+        // echo "/nYii::\$app->user->isGuest-ajay 💀<pre>"; print_r(Yii::$app->user->isGuest); echo "\n</pre>";exit;
+   
+        if (!Yii::$app->user->isGuest) {
+            return $this->goHome();
         }
 
         $this->layout = "login_layout";
@@ -98,8 +96,12 @@ class SiteController extends Controller
      * @return Response
      */
     public function actionLogout()
-    {   
-        Yii::$app->user->logout();
+    {
+        $rest = Yii::$app->user->logout();
+        // echo "/n\$rest-ajay 💀<pre>";
+        // print_r($rest);
+        // echo "\n</pre>";
+        // exit;
         return $this->redirect(['site/login']);
         // return $this->goHome();
     }

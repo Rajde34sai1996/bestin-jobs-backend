@@ -28,12 +28,12 @@ class HealthcareQualificationController extends Controller
                      [
                          'actions' => ['create','update','delete','index','view'],
                          'allow' => true,
-                        //  'roles' => ['admin'],
+                         'roles' => ['@'],
                      ],
                      [
                          'actions' => ['index','update'],
                          'allow' => true,
-                        //  'roles' => ['admin'],
+                         'roles' => ['@'],
                      ],
                  ],
              ],
@@ -41,6 +41,7 @@ class HealthcareQualificationController extends Controller
                  'class' => VerbFilter::className(),
                  'actions' => [
                      'delete' => ['POST'],
+                     'roles' => ['@'],
                  ],
              ],
          ];

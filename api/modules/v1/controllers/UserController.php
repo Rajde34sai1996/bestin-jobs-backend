@@ -19,6 +19,8 @@ use yii\web\Response;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
 use common\models\User;
+use common\models\Images;
+use yii\web\UploadedFile;
 class UserController extends ActiveController
 {
     public $modelClass = 'common\models\User';
@@ -74,6 +76,7 @@ class UserController extends ActiveController
                 'healthcare-qualification-search' => ['get'],
                 'send-otp' => ['post'],
                 'verify-otp' => ['post'],
+                'upload'=>['post'],
             ]
         ];
         // re-add authentication filter
@@ -85,7 +88,8 @@ class UserController extends ActiveController
             'skill-search',
             'healthcare-qualification-search',
             'send-otp',
-            'verify-otp'
+            'verify-otp',
+            'upload'
         ];
 
         // setup access
@@ -237,5 +241,41 @@ class UserController extends ActiveController
 
         return array('status' => true, 'message' => 'got your healthcare-qualification-search list', 'data' => $dataProvider);
     }
+    public function actionUpload()
+    {
+        try{
+            $file = UploadedFile::getInstanceByName('file'); // 'file' is the name of the input field in the form
+            $data = Yii::$app->request->bodyParams;
+            $model = new Images();
+            if ($file) {
+                $uploadPath = Yii::$app->params['uploadPath'];
+                $filename = uniqid() . '.' . $file->extension;
+                $filePath = $uploadPath . $filename;
+                $model->user_id = $data['user_id'];
+                $model->path = $filePath;
+                $model->type = $data['type'];
+                $model->extention = $file->extension;
+                if ($model->save()) {
+                    if ($file->saveAs($filePath)) {
+                        // File uploaded successfully
+                        return ['success' => 200, 'data' => $filename,'message' => 'file uploaded successfully'];
+                    } else {
+                        // Delete the model if file saving fails
+                        $model->delete();
+                        return ['success' => false, 'message' => 'Failed to save the uploaded file.'];
+                    }
+                } else {
+                    // Model validation failed, return the validation errors
+                    return ['success' => false, 'message' => $model->errors];
+                }
+            } else {
+                // No file provided in the request
+                return ['success' => false, 'error' => 'No file uploaded.'];
+            }
+        }catch (\Exception $e) {
+            echo "/n\$e-ajay 💀<pre>"; print_r($e); echo "\n</pre>";exit;
 
+        }
+      
+    }
 }
