@@ -78,6 +78,7 @@ class UserController extends ActiveController
                 'send-otp' => ['post'],
                 'verify-otp' => ['post'],
                 'upload' => ['post'],
+                'add-profile' => ['post'],
             ]
         ];
         // re-add authentication filter
@@ -90,7 +91,8 @@ class UserController extends ActiveController
             'healthcare-qualification-search',
             'send-otp',
             'verify-otp',
-            'upload'
+            'upload',
+            'add-profile'
         ];
 
         // setup access
@@ -155,13 +157,13 @@ class UserController extends ActiveController
             if ($userOtp === null) {
                 // If the phone number does not exist, create a new record
                 $otp = new Userotp();
-                $otp->contry_code = $data['code'];
+                $otp->contry_code = $data['contry_code'];
                 $otp->phone_number = $data['phone_number'];
-                $otp->otp = $otp;
+                $otp->otp = $otpdata;
                 if ($otp->save()) {
-                    return ['message' => 'OTP sent successfully.', 'data' => ['otp' => $otpdata, 'is_old' => true]];
+                    return ['message' => 'OTP sent successfully.', 'data' => ['otp' => $otpdata, 'is_old' => false]];
                 } else {
-                    return ['message' => $userOtp->errors];
+                    return ['message' => $otp->errors];
                 }
 
             } else {
@@ -171,7 +173,6 @@ class UserController extends ActiveController
             }
 
         } catch (\Exception $e) {
-            echo "/n\$e-ajay 💀<pre>"; print_r($e); echo "\n</pre>";exit;
             return ["status" => false, 'message' => $e];
         }
         // Send OTP to the user (implement your SMS gateway integration here)
@@ -278,5 +279,12 @@ class UserController extends ActiveController
 
         }
 
+    }
+    public function actionAddProfile(){
+        try{
+            $data = Yii::$app->request->post();
+        }catch(\Exception $e){
+            return ['success' => false, 'error' => 'something is wrong try again.'];
+        }
     }
 }
