@@ -21,6 +21,7 @@ use yii\db\Expression;
 use common\models\User;
 use common\models\Images;
 use yii\web\UploadedFile;
+
 class UserController extends ActiveController
 {
     public $modelClass = 'common\models\User';
@@ -76,7 +77,7 @@ class UserController extends ActiveController
                 'healthcare-qualification-search' => ['get'],
                 'send-otp' => ['post'],
                 'verify-otp' => ['post'],
-                'upload'=>['post'],
+                'upload' => ['post'],
             ]
         ];
         // re-add authentication filter
@@ -147,34 +148,31 @@ class UserController extends ActiveController
     {
         // Generate OTP
         try {
-            $otp = 123456;
+            $otpdata = 123456;
             $data = Yii::$app->request->bodyParams;
-            $userOtp = Userotp::findOne(['phone_number' => $data['phone_number']]);
+            $userOtp = Userotp::findOne(['contry_code'=>$data['contry_code'],'phone_number' => $data['phone_number']]);
 
             if ($userOtp === null) {
                 // If the phone number does not exist, create a new record
-                $userOtp = new Userotp();
-                $userOtp->contry_code = $data['code'];
-                $userOtp->phone_number = $data['phone_number'];
-                $userOtp->otp = $otp;
-                if ($userOtp->save()) {
-                    return ['message' => 'OTP sent successfully.', 'data' => ['otp' => $otp, 'is_old' => true]];
+                $otp = new Userotp();
+                $otp->contry_code = $data['code'];
+                $otp->phone_number = $data['phone_number'];
+                $otp->otp = $otp;
+                if ($otp->save()) {
+                    return ['message' => 'OTP sent successfully.', 'data' => ['otp' => $otpdata, 'is_old' => true]];
                 } else {
-                    return ['message' => Yii::$app->general->error($userOtp->errors)];
+                    return ['message' => $userOtp->errors];
                 }
 
             } else {
-                $userOtp->otp = $otp;
+                $userOtp->otp = $otpdata;
                 $userOtp->save();
-                return ['message' => 'OTP sent successfully.', 'data' => ['otp' => $otp, 'is_old' => true]];
+                return ['message' => 'OTP sent successfully.', 'data' => ['otp' => $otpdata, 'is_old' => true]];
             }
 
         } catch (\Exception $e) {
-            echo "/n\$e-ajay 💀<pre>";
-            print_r($e);
-            echo "\n</pre>";
-            exit;
-            return ["status" => false, 'message' => Yii::$app->general->error($userOtp->errors)];
+            echo "/n\$e-ajay 💀<pre>"; print_r($e); echo "\n</pre>";exit;
+            return ["status" => false, 'message' => $e];
         }
         // Send OTP to the user (implement your SMS gateway integration here)
         // Example: You can use a service like Twilio to send SMS
@@ -189,14 +187,14 @@ class UserController extends ActiveController
         $data = Yii::$app->request->bodyParams;
 
         // Verify OTP and check if it's within the valid time window (1 minute)
-        $userOtp = Userotp::findOne(['phone_number' => $data['phone_number'], 'otp' => $data['otp']]);
+        $userOtp = Userotp::findOne(['contry_code' => $data['contry_code'], 'phone_number' => $data['phone_number'], 'otp' => $data['otp']]);
         $users = User::find()
-        ->select(['id','name','dob','gender' ,'country','role','profile_pic','email', 'phone_number']) // Specify the columns you want to retrieve
+        ->select(['id', 'name', 'dob', 'gender', 'country', 'role', 'profile_pic', 'email', 'phone_number']) // Specify the columns you want to retrieve
         ->where(['phone_number' => $userOtp['phone_number']])
-        ->one();
-    
+        ->asArray()->one();
+        
 
-        if (!$userOtp || strtotime($userOtp->updated_at) < strtotime('-1 minute')) {
+        if (!$userOtp) {
             Yii::$app->response->statusCode = 401; // Unauthorized status code
             Yii::$app->response->format = Response::FORMAT_JSON;
             return ['error' => 'Invalid OTP or expired.'];
@@ -243,7 +241,7 @@ class UserController extends ActiveController
     }
     public function actionUpload()
     {
-        try{
+        try {
             $file = UploadedFile::getInstanceByName('file'); // 'file' is the name of the input field in the form
             $data = Yii::$app->request->bodyParams;
             $model = new Images();
@@ -258,7 +256,7 @@ class UserController extends ActiveController
                 if ($model->save()) {
                     if ($file->saveAs($filePath)) {
                         // File uploaded successfully
-                        return ['success' => 200, 'data' => $filename,'message' => 'file uploaded successfully'];
+                        return ['success' => 200, 'data' => $filename, 'message' => 'file uploaded successfully'];
                     } else {
                         // Delete the model if file saving fails
                         $model->delete();
@@ -272,10 +270,13 @@ class UserController extends ActiveController
                 // No file provided in the request
                 return ['success' => false, 'error' => 'No file uploaded.'];
             }
-        }catch (\Exception $e) {
-            echo "/n\$e-ajay 💀<pre>"; print_r($e); echo "\n</pre>";exit;
+        } catch (\Exception $e) {
+            echo "/n\$e-ajay 💀<pre>";
+            print_r($e);
+            echo "\n</pre>";
+            exit;
 
         }
-      
+
     }
 }
