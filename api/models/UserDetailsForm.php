@@ -3,6 +3,7 @@
 namespace app\models;
 
 use common\models\UserDetails;
+use common\models\WorkPreference;
 use Yii;
 use yii\base\Model;
 
@@ -46,6 +47,7 @@ class UserDetailsForm extends Model
             // email and password are both required
             [['user_id'], 'required'],
             [['id', 'user_id', 'experience_level', 'working_time', 'distance_level', 'whatsapp_number', 'uk_driving_license_number', 'dbs_number', 'skill_id', 'qualification_id', 'national_insurance_number', 'experience_month', 'created_at', 'updated_at'], 'integer'],
+            [['work_preference'], 'safe'],
 
 
         ];
@@ -55,11 +57,19 @@ class UserDetailsForm extends Model
 
         if ($this->validate()) {
             $userDetails = UserDetails::findOne(['user_id' => $this->user_id]);
-
+            $WorkPreff = WorkPreference::findOne(['user_id' => $this->user_id, 'selected_preference' => $this->work_preference]);
             if (!$userDetails) {
                 // If no record found, create a new one
                 $userDetails = new UserDetails();
                 $userDetails->user_id = $this->user_id;
+            }
+            if (!$WorkPreff) {
+                $WorkPreff = new WorkPreference();
+                $WorkPreff->user_id = $this->user_id;
+                $WorkPreff->selected_preference = $this->work_preference;
+            }
+            if ($this->work_preference) {
+                $WorkPreff->selected_preference = $this->work_preference;
             }
             $userDetails->experience_level = $this->experience_level;
             $userDetails->working_time = $this->working_time;
@@ -72,7 +82,7 @@ class UserDetailsForm extends Model
             $userDetails->national_insurance_number = $this->national_insurance_number;
             $userDetails->experience_month = $this->experience_month;
 
-            if ($userDetails->save()) {
+            if ($userDetails->save() && $WorkPreff->save()) {
                 return true; // Successfully inserted
             } else {
                 Yii::error('Failed to insert user details: ' . print_r($userDetails->errors, true));
@@ -85,10 +95,22 @@ class UserDetailsForm extends Model
 
 
     }
-    public function findAllByID($id){
-        $data = UserDetails::find()->where(['user_id'=> $id])->asArray()->all();
-        return $data; 
+    public function findAllByID($id)
+    {
+        $userData = UserDetails::find()->where(['user_id' => $id])->asArray()->one();
+        $workPreferences = WorkPreference::find()->where(['user_id' => $id])->asArray()->all();
+
+        if ($userData !== null) {
+            $formattedData = [
+                'user_details' => $userData,
+                'work_preferences' => $workPreferences,
+            ];
+
+            return $formattedData;
+        }
     }
+
+
     /**
      * Return Users object
      *

@@ -5,6 +5,7 @@ namespace common\models;
 use Yii;
 
 use yii\behaviors\TimestampBehavior;
+
 /**
  * This is the model class for table "user_details".
  *
@@ -58,7 +59,7 @@ class UserDetails extends \yii\db\ActiveRecord
             [['id', 'user_id', 'experience_level', 'working_time', 'distance_level', 'whatsapp_number', 'uk_driving_license_number', 'dbs_number', 'skill_id', 'qualification_id', 'national_insurance_number', 'experience_month', 'created_at', 'updated_at'], 'integer'],
             [['have_permission'], 'boolean'],
             [['visa_exp_date', 'experience_year'], 'safe'],
-            [['work_preference', 'visa_category', 'current_orgnization'], 'string', 'max' => 50],
+            [['visa_category', 'current_orgnization'], 'string', 'max' => 50],
             [['qualification_id'], 'exist', 'skipOnError' => true, 'targetClass' => HealthcareQualification::class, 'targetAttribute' => ['qualification_id' => 'id']],
             [['skill_id'], 'exist', 'skipOnError' => true, 'targetClass' => Skills::class, 'targetAttribute' => ['skill_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
@@ -75,7 +76,6 @@ class UserDetails extends \yii\db\ActiveRecord
             'user_id' => 'User ID',
             'experience_level' => 'Experience Level',
             'working_time' => 'Working Time',
-            'work_preference' => 'Work Preference',
             'distance_level' => 'Distance Level',
             'whatsapp_number' => 'Whatsapp Number',
             'uk_driving_license_number' => 'Uk Driving License Number',
