@@ -71,12 +71,14 @@ class LoginForm extends Model
                     return Yii::$app->user->login($findUser,1);
     
                 }else {
-                    $this->addError('login', "that you've entered doesn't match any account.");
+                    $this->addError('login', "that phone number you've entered doesn't match any account.");
                 }
             }
             $this->is_new = false;
             return  $isCheck;
 
+        }else {
+            $this->addError('login', "that phone number you've entered doesn't match any account.");
         }
     }
 
