@@ -4,8 +4,72 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "52600feb72a4e68dd606250269447a30",
+    "content-hash": "eddbea8aa54b798db04acc851aba65a7",
     "packages": [
+        {
+            "name": "2amigos/yii2-ckeditor-widget",
+            "version": "1.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/2amigos/yii2-ckeditor-widget.git",
+                "reference": "023eb29fedfc3c3121c17688ed237e8688f5eb50"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/2amigos/yii2-ckeditor-widget/zipball/023eb29fedfc3c3121c17688ed237e8688f5eb50",
+                "reference": "023eb29fedfc3c3121c17688ed237e8688f5eb50",
+                "shasum": ""
+            },
+            "require": {
+                "yiisoft/yii2": "~2.0.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.*"
+            },
+            "type": "yii2-extension",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                },
+                "asset-installer-paths": {
+                    "bower-asset-library": "vendor/bower"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "dosamigos\\ckeditor\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "2amigOS! Consulting Group",
+                    "email": "hola@2amigos.us",
+                    "homepage": "http://2amigos.us",
+                    "role": "Developer"
+                }
+            ],
+            "description": "CKEditor widget for Yii2.",
+            "homepage": "http://yiiwheels.com/extension/ckeditor-widget",
+            "keywords": [
+                "2amigos",
+                "CKEditor",
+                "extension",
+                "widget",
+                "yii",
+                "yii 2",
+                "yii2"
+            ],
+            "support": {
+                "issues": "https://github.com/2amigos/yii2-ckeditor-widget/issues",
+                "source": "https://github.com/2amigos/yii2-ckeditor-widget"
+            },
+            "abandoned": true,
+            "time": "2015-04-30T12:22:25+00:00"
+        },
         {
             "name": "bower-asset/bootstrap",
             "version": "v5.3.0",
@@ -74,6 +138,24 @@
                 "reference": "46d412120e2feb868876769a9847790ba278c882"
             },
             "type": "bower-asset"
+        },
+        {
+            "name": "bower-asset/simplemde",
+            "version": "1.11.2",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:sparksuite/simplemde-markdown-editor.git",
+                "reference": "6abda7ab68cc20f4aca870eb243747951b90ab04"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sparksuite/simplemde-markdown-editor/zipball/6abda7ab68cc20f4aca870eb243747951b90ab04",
+                "reference": "6abda7ab68cc20f4aca870eb243747951b90ab04"
+            },
+            "type": "bower-asset",
+            "license": [
+                "MIT"
+            ]
         },
         {
             "name": "bower-asset/yii2-pjax",
@@ -2093,6 +2175,55 @@
                 "source": "https://github.com/tubalmartin/YUI-CSS-compressor-PHP-port"
             },
             "time": "2018-01-15T15:26:51+00:00"
+        },
+        {
+            "name": "yii2mod/yii2-markdown",
+            "version": "1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/yii2mod/yii2-markdown.git",
+                "reference": "2a3e3c86d5ada1999e104997bf10d40ab74e6c70"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/yii2mod/yii2-markdown/zipball/2a3e3c86d5ada1999e104997bf10d40ab74e6c70",
+                "reference": "2a3e3c86d5ada1999e104997bf10d40ab74e6c70",
+                "shasum": ""
+            },
+            "require": {
+                "bower-asset/simplemde": "*",
+                "yiisoft/yii2": "*"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "~2.0"
+            },
+            "type": "yii2-extension",
+            "autoload": {
+                "psr-4": {
+                    "yii2mod\\markdown\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Igor Chepurnoy",
+                    "email": "igorzfort@gmail.com"
+                }
+            ],
+            "description": "Markdown Widget for Yii2",
+            "keywords": [
+                "yii2",
+                "yii2 markdown editor",
+                "yii2 markdown widget"
+            ],
+            "support": {
+                "issues": "https://github.com/yii2mod/yii2-markdown/issues",
+                "source": "https://github.com/yii2mod/yii2-markdown/tree/master"
+            },
+            "time": "2017-11-24T15:38:16+00:00"
         },
         {
             "name": "yiisoft/yii2",
@@ -6420,5 +6551,5 @@
         "php": ">=7.4.0"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.6.0"
 }

@@ -21,5 +21,8 @@ return [
         'general' => [
             'class' => 'common\components\General',
         ],
+        'commonuser' => [
+            'class' => 'common\components\CommonUser',
+        ],
     ],
 ];

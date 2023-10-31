@@ -5,6 +5,7 @@ namespace app\modules\v1\controllers;
 use Yii;
 use app\filters\auth\HttpBearerAuth;
 use app\models\LoginForm;
+use app\models\UserDetailsForm;
 use yii\filters\AccessControl;
 use yii\filters\auth\CompositeAuth;
 use yii\rest\ActiveController;
@@ -52,7 +53,7 @@ class UserController extends ActiveController
         $behaviors['verbs'] = [
             'class' => \yii\filters\VerbFilter::className(),
             'actions' => [
-                'test'
+                'test',
 
             ],
         ];
@@ -81,6 +82,7 @@ class UserController extends ActiveController
                 'upload' => ['post'],
                 'add-profile' => ['post'],
                 'test' => ['post'],
+                'get-profile' => ['get'],
             ]
         ];
         // re-add authentication filter
@@ -93,7 +95,7 @@ class UserController extends ActiveController
             'send-otp',
             'verify-otp',
             'upload',
-            'add-profile'
+            'add-profile',
         ];
 
         // setup access
@@ -109,9 +111,10 @@ class UserController extends ActiveController
                 ],
                 [
                     'allow' => true,
-                    'actions' => ['test'],
+                    'actions' => ['test','get-profile'],
                     'roles' => ['@'],
                 ],
+
             ],
         ];
 
@@ -120,8 +123,12 @@ class UserController extends ActiveController
 
     public function actionTest()
     {
-        echo "/nYii::\$app->user->id-ajay 💀<pre>"; print_r(Yii::$app->user->id); echo "\n</pre>";exit;
+        echo "/nYii::\$app->user->id-ajay 💀<pre>";
+        print_r(Yii::$app->user->id);
+        echo "\n</pre>";
+        exit;
     }
+
 
 
     public function actionList()
@@ -158,7 +165,7 @@ class UserController extends ActiveController
         try {
             $otpdata = 123456;
             $data = Yii::$app->request->bodyParams;
-            $userOtp = Userotp::findOne(['contry_code'=>$data['contry_code'],'phone_number' => $data['phone_number']]);
+            $userOtp = Userotp::findOne(['contry_code' => $data['contry_code'], 'phone_number' => $data['phone_number']]);
 
             if ($userOtp === null) {
                 // If the phone number does not exist, create a new record
@@ -190,13 +197,13 @@ class UserController extends ActiveController
 
 
     public function actionVerifyOtp()
-    {   
+    {
 
         try {
             $model = new LoginForm();
-            if ($model->load(Yii::$app->request->post())){
+            if ($model->load(Yii::$app->request->post())) {
                 if ($model->validate() && $model->login()) {
-                    if($model->is_new){
+                    if ($model->is_new) {
                         $user = $model->getUser();
                         return Yii::$app->commonuser->makelogin($user);
                     }
@@ -204,7 +211,7 @@ class UserController extends ActiveController
                 } else {
                     return array('status' => true, 'message' => Yii::$app->general->error($model->errors));
                 }
-            }else {
+            } else {
                 return array('status' => false, 'message' => 'Login Credentials Are Not Found !');
             }
         } catch (\Throwable $e) {
@@ -212,7 +219,6 @@ class UserController extends ActiveController
             return array('status' => false, 'message' => $e->getMessage());
         }
 
-        
     }
 
     public function actionSkillsSearch()
@@ -258,7 +264,8 @@ class UserController extends ActiveController
                 }
             } else {
                 // No file provided in the request
-                return ['success' => false, 'error' => 'No file uploaded.'];
+                return ['status' => 500, 'message' => 'No file uploaded.'];
+
             }
         } catch (\Exception $e) {
             echo "/n\$e-ajay 💀<pre>";
@@ -269,11 +276,33 @@ class UserController extends ActiveController
         }
 
     }
-    public function actionAddProfile(){
-        try{
-            $data = Yii::$app->request->post();
-        }catch(\Exception $e){
-            return ['success' => false, 'error' => 'something is wrong try again.'];
+    public function actionAddProfile()
+    {
+        try {
+            $model = new UserDetailsForm();
+            $model->load(Yii::$app->request->post());
+            if ($model->validate() && $model->Add_Profile()) {
+                return ['status' => 200, 'message' => 'Profile Data Successfully Added.'];
+            } else {
+                return ['status' => 500, 'message' => $model->errors];
+            }
+        } catch (\Exception $e) {
+            return ['status' => 404, 'message' => $e->getMessage()];
+        }
+    }
+    public function actionGetProfile()
+    {
+        try {
+            $model = new UserDetailsForm();
+            $data = $model->findAllByID(Yii::$app->user->id);
+            if ($data) {
+                return ['status' => 200, 'data' => $data,'message'=> 'user details for profile'];
+            }else {
+                # code...
+                return ['status' => 200, 'data' => $data,'message' => $model->errors];
+            }
+        } catch (\Exception $e) {
+            return ['status' => 500, 'message' => $e->getMessage()];
         }
     }
 }

@@ -4,6 +4,7 @@ namespace common\models;
 
 use Yii;
 
+use yii\behaviors\TimestampBehavior;
 /**
  * This is the model class for table "user_details".
  *
@@ -53,7 +54,7 @@ class UserDetails extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'user_id'], 'required'],
+            [['user_id'], 'required'],
             [['id', 'user_id', 'experience_level', 'working_time', 'distance_level', 'whatsapp_number', 'uk_driving_license_number', 'dbs_number', 'skill_id', 'qualification_id', 'national_insurance_number', 'experience_month', 'created_at', 'updated_at'], 'integer'],
             [['have_permission'], 'boolean'],
             [['visa_exp_date', 'experience_year'], 'safe'],
