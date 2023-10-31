@@ -4,6 +4,7 @@ namespace app\modules\v1\controllers;
 
 use Yii;
 use app\filters\auth\HttpBearerAuth;
+use app\models\LoginForm;
 use yii\filters\AccessControl;
 use yii\filters\auth\CompositeAuth;
 use yii\rest\ActiveController;
@@ -79,13 +80,13 @@ class UserController extends ActiveController
                 'verify-otp' => ['post'],
                 'upload' => ['post'],
                 'add-profile' => ['post'],
+                'test' => ['post'],
             ]
         ];
         // re-add authentication filter
         $behaviors['authenticator'] = $auth;
         // avoid authentication on CORS-pre-flight requests (HTTP OPTIONS method)
         $behaviors['authenticator']['except'] = [
-            'test',
             'list',
             'skill-search',
             'healthcare-qualification-search',
@@ -106,6 +107,11 @@ class UserController extends ActiveController
                     'actions' => [''],
                     'roles' => ['user'],
                 ],
+                [
+                    'allow' => true,
+                    'actions' => ['test'],
+                    'roles' => ['@'],
+                ],
             ],
         ];
 
@@ -114,7 +120,7 @@ class UserController extends ActiveController
 
     public function actionTest()
     {
-
+        echo "/nYii::\$app->user->id-ajay 💀<pre>"; print_r(Yii::$app->user->id); echo "\n</pre>";exit;
     }
 
 
@@ -184,46 +190,29 @@ class UserController extends ActiveController
 
 
     public function actionVerifyOtp()
-    {
-        $data = Yii::$app->request->bodyParams;
+    {   
 
-        // Verify OTP and check if it's within the valid time window (1 minute)
-        $userOtp = Userotp::findOne(['contry_code' => $data['contry_code'], 'phone_number' => $data['phone_number'], 'otp' => $data['otp']]);
-        $users = User::find()
-        ->select(['id', 'name', 'dob', 'gender', 'country', 'role', 'profile_pic', 'email', 'phone_number']) // Specify the columns you want to retrieve
-        ->where(['phone_number' => $userOtp['phone_number']])
-        ->asArray()->one();
-        
-
-        if (!$userOtp) {
-            Yii::$app->response->statusCode = 401; // Unauthorized status code
-            Yii::$app->response->format = Response::FORMAT_JSON;
-            return ['error' => 'Invalid OTP or expired.'];
+        try {
+            $model = new LoginForm();
+            if ($model->load(Yii::$app->request->post())){
+                if ($model->validate() && $model->login()) {
+                    if($model->is_new){
+                        $user = $model->getUser();
+                        return Yii::$app->commonuser->makelogin($user);
+                    }
+                    return array('status' => false, 'message' => 'otp verify', 'data' => '');
+                } else {
+                    return array('status' => true, 'message' => Yii::$app->general->error($model->errors));
+                }
+            }else {
+                return array('status' => false, 'message' => 'Login Credentials Are Not Found !');
+            }
+        } catch (\Throwable $e) {
+            Yii::$app->general->createLogFile($e);
+            return array('status' => false, 'message' => $e->getMessage());
         }
 
-        // Determine if the user is old or new
-        $check_user = ($users !== null) ? 'is_old' : 'is_new';
-
-        // Generate Authentication Token
-        $secret = 'TIME_FOR_ALL_ALWAYS'; // Replace this with your actual secret key
-        $tokenId = base64_encode(random_bytes(32));
-        $issuedAt = time();
-        $expire = $issuedAt + 3600; // Token expiration time (1 hour)
-
-        // Token payload data
-        $tokenData = [
-            'iat' => $issuedAt,
-            // Issued at: time when the token was generated
-            'jti' => $tokenId,
-            // Json Token Id: an unique identifier for the token
-            'data' => ($check_user == 'is_old') ? $users : $userOtp,
-            // You can add more data to the token payload if needed
-        ];
-
-        // Generate JWT token
-        $authToken = JWT::encode($tokenData, $secret, 'HS256', $expire);
-
-        return array('status' => true, 'message' => 'welcome to bestin-jobs', 'data' => ['token' => $authToken, 'check_user' => $check_user, 'users_data' => $users]);
+        
     }
 
     public function actionSkillsSearch()

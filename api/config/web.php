@@ -113,7 +113,7 @@ $config = [
             'baseUrl' => '/best-in-job/',
         ],
         'user' => [
-            'identityClass' => 'app\models\User',
+            'identityClass' => 'common\models\User',
             'enableAutoLogin' => false,
             'authTimeout' => 2678400, //31 Days in Seconds
             'identityCookie' => ['name' => '_identity-api'],

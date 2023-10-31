@@ -26,7 +26,7 @@ $action     = Yii::$app->controller->action->id;
     <?php $this->registerCsrfMetaTags() ?>
 
     <title>
-        <?= Html::encode($this->title) . ' | YOUR_PROJECT_NAME ' . date('Y') ?>
+        <?= Html::encode($this->title) . ' | Best in Job ' . date('Y') ?>
     </title>
 
     <?php $this->head() ?>

@@ -9,6 +9,8 @@ use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\web\Request as WebRequest;
 use yii\web\IdentityInterface;
+use yii\db\Expression;
+
 use lajax\translatemanager\helpers\Language as Lx;
 
 /**
@@ -28,27 +30,23 @@ use lajax\translatemanager\helpers\Language as Lx;
  */
 class User extends ActiveRecord implements IdentityInterface
 {
-    const STATUS_DELETED = 0;
-    const STATUS_INACTIVE = 9;
-    const STATUS_ACTIVE = 10;
+    const STATUS_DELETED            = -1;
+    const STATUS_INACTIVE           = 0;
+    const STATUS_PENDING            = 1;
+    const STATUS_ACTIVE             = 10;
+
+    public $authKey;
+    public $access_token;
+    protected static $decodedToken;
 
 
-    /**
+
+   /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return '{{%user}}';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function behaviors()
-    {
-        return [
-            TimestampBehavior::class,
-        ];
+        return 'user';
     }
 
     /**
@@ -56,14 +54,18 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function rules()
     {
-
         return [
-            [['email', 'name', 'dob', 'gender', 'phone_number', 'country', 'role'], 'required'],
+            [['username', 'auth_key', 'password_hash', 'email', 'dob', 'gender', 'country_code', 'phone_number', 'country', 'role', 'profile_pic', 'setting', 'created_at', 'updated_at'], 'required'],
             [['dob'], 'safe'],
             [['gender', 'role', 'setting'], 'string'],
-            [['created_at', 'updated_at'], 'integer'],
-            [['email', 'password', 'name', 'phone_number', 'profile_pic'], 'string', 'max' => 255],
+            [['phone_number', 'status', 'created_at', 'updated_at'], 'integer'],
+            [['username', 'password_hash', 'password_reset_token', 'email', 'profile_pic', 'verification_token'], 'string', 'max' => 255],
+            [['auth_key'], 'string', 'max' => 32],
+            [['country_code'], 'string', 'max' => 10],
             [['country'], 'string', 'max' => 50],
+            [['username'], 'unique'],
+            [['email'], 'unique'],
+            [['password_reset_token'], 'unique'],
         ];
     }
 
@@ -74,19 +76,80 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             'id' => 'ID',
+            'username' => 'Username',
+            'auth_key' => 'Auth Key',
+            'password_hash' => 'Password Hash',
+            'password_reset_token' => 'Password Reset Token',
             'email' => 'Email',
-            'password' => 'Password',
-            'name' => 'Name',
             'dob' => 'Dob',
             'gender' => 'Gender',
+            'country_code' => 'Country Code',
             'phone_number' => 'Phone Number',
             'country' => 'Country',
             'role' => 'Role',
-            'setting' => 'Setting',
             'profile_pic' => 'Profile Pic',
+            'setting' => 'Setting',
+            'verification_token' => 'Verification Token',
+            'status' => 'Status',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
+    }
+
+        /**
+     * {@inheritdoc}
+     */
+    public static function findIdentity($id)
+    {
+        $user = static::findOne(['id' => $id, 'status' => self::STATUS_ACTIVE]);
+        if ($user == null) {
+            return null;
+        }
+        return $user;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function findRole($id)
+    {
+        $user = static::findOne(['id' => $id, 'status' => self::STATUS_ACTIVE]);
+        if ($user == null) {
+            return null;
+        }
+        return $user->role;
+    }
+
+    /**
+     * Finds user by username
+     *
+     * @param string $username
+     * @return static|null
+     */
+    public static function findByUsername($username)
+    {
+        // $user = static::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE]);
+        $user = static::find()->where(['OR', ['username' => $username], ['email' => $username]])->one();
+        if ($user == null) {
+            return null;
+        }
+        return $user;
+    }
+
+    /**
+     * Finds user by email
+     *
+     * @param string $value = Email
+     * @param string $login_type = user / gourmet
+     * @return static|null
+     */
+    public static function findByPhoneNumber($phone_number,$country_code,$role)
+    {
+        $user = static::findOne(['country_code' => $country_code,'phone_number' => $phone_number,'role' => $role,'status' => self::STATUS_ACTIVE]);
+        if ($user == null) {
+            return null;
+        }
+        return $user;
     }
     /**
      * Logins user by given JWT encoded string. If string is correctly decoded
@@ -118,27 +181,40 @@ class User extends ActiveRecord implements IdentityInterface
 
     protected static function getSecretKey()
     {
-        return Yii::$app->params['jwtSecretCode'];
+        return 'groovybestinjob';
     }
 
     /**
-     * {@inheritdoc}
+     * Getter for encryption algorytm used in JWT generation and decoding
+     * Override this method to set up other algorytm.
+     * @return string needed algorytm
      */
-    public static function findIdentity($id)
+    public static function getAlgo()
     {
-        return static::findOne(['id' => $id, 'status' => self::STATUS_ACTIVE]);
+        return 'HS256';
     }
 
     /**
-     * Finds user by username
-     *
-     * @param string $username
-     * @return static|null
+     * Finds Users model using static method findOne
+     * Override this method in model if you need to complicate id-management
+     * @param  string $id if of user to search
+     * @return mixed       Users model
      */
-    public static function findByUsername($username)
+    public static function findByJTI($id)
     {
-        return static::findOne(['name' => $username, 'status' => self::STATUS_ACTIVE]);
+        /** @var Users $user */
+        $user = static::find()->where(['id' => $id])
+            ->andWhere(['status' => self::STATUS_ACTIVE])
+            ->andWhere([
+                '>', 'access_token_expired_at', new Expression('UNIX_TIMESTAMP()')
+            ])->one();
+            
+        if ($user == null) {
+            return null;
+        }
+        return $user;
     }
+
 
     /**
      * Finds user by password reset token
@@ -221,7 +297,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function validatePassword($password)
     {
-        return Yii::$app->security->validatePassword($password, $this->password);
+        return Yii::$app->security->validatePassword($password, $this->password_hash);
     }
 
     /**
@@ -266,7 +342,11 @@ class User extends ActiveRecord implements IdentityInterface
         $this->password_reset_token = null;
     }
 
-
+    public function getJTI()
+    {
+        return $this->getId();
+    }
+    
     /*
      * JWT Related Functions
      */
@@ -302,12 +382,53 @@ class User extends ActiveRecord implements IdentityInterface
             // Expire: Timestamp of when the token should cease to be valid. Should be greater than iat and nbf. In this case, the token will expire 60 seconds after being issued.
             'data' => [
                 'username' => $this->username,
-                'roleLabel' => $this->getRoleLabel(),
+                'roleLabel' => $this->role,
             ]
         ], static::getHeaderToken());
         // Set up id
         $token['jti'] = $this->getJTI(); // JSON Token ID: A unique string, could be used to validate a token, but goes against not having a centralized issuer authority.
         return [JWT::encode($token, $secret, static::getAlgo()), $token];
+    }
+
+    protected static function getHeaderToken()
+    {
+        return [];
+    }
+
+
+     /**
+     * Generate access token
+     *  This function will be called every on request to refresh access token.
+     *
+     * @param bool $forceRegenerate whether regenerate access token even if not expired
+     *
+     * @return bool whether the access token is generated or not
+     */
+    public function generateAccessTokenAfterUpdatingClientInfo($forceRegenerate = false)
+    {
+
+        // check time is expired or not
+        if (
+            $forceRegenerate == true
+            || $this->access_token_expired_at == null
+            || (time() > $this->access_token_expired_at)
+        ) {
+            // generate access token
+            $this->generateAccessToken();
+        }
+            
+
+        $this->save(false);
+        return true;
+    }
+
+    public function generateAccessToken()
+    {
+        // generate access token
+        //        $this->access_token = Yii::$app->security->generateRandomString();
+        $tokens = $this->getJWT();
+        $this->access_token = $tokens[0];   // Token
+        $this->access_token_expired_at = $tokens[1]['exp']; // Expire
     }
 
 

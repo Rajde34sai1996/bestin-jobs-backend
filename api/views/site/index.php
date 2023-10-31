@@ -2,7 +2,7 @@
 
 use yii\helpers\Url;
 
-$this->title = "YOUR_PROJECT_NAME";
+$this->title = "Best in Job";
 $user_id     = \Yii::$app->user->id;
 
 ?>
