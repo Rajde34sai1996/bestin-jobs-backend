@@ -48,14 +48,19 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return 'user';
     }
-
+    public function behaviors()
+    {
+        return [
+            TimestampBehavior::class,
+        ];
+    }
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['username', 'auth_key', 'password_hash', 'email', 'dob', 'gender', 'country_code', 'phone_number', 'country', 'role', 'profile_pic', 'setting', 'created_at', 'updated_at'], 'required'],
+            [['username', 'email', 'dob', 'gender', 'country_code', 'phone_number', 'country', 'role'], 'required'],
             [['dob'], 'safe'],
             [['gender', 'role', 'setting'], 'string'],
             [['phone_number', 'status', 'created_at', 'updated_at'], 'integer'],

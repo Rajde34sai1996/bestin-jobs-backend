@@ -83,6 +83,8 @@ class UserController extends ActiveController
                 'add-profile' => ['post'],
                 'test' => ['post'],
                 'get-profile' => ['get'],
+                'add-user' => ['post'],
+                'update-user' => ['post'],
             ]
         ];
         // re-add authentication filter
@@ -96,6 +98,7 @@ class UserController extends ActiveController
             'verify-otp',
             'upload',
             'add-profile',
+            'add-user',
         ];
 
         // setup access
@@ -111,7 +114,7 @@ class UserController extends ActiveController
                 ],
                 [
                     'allow' => true,
-                    'actions' => ['test','get-profile'],
+                    'actions' => ['test', 'get-profile', 'update-user'],
                     'roles' => ['@'],
                 ],
 
@@ -268,10 +271,8 @@ class UserController extends ActiveController
 
             }
         } catch (\Exception $e) {
-            echo "/n\$e-ajay 💀<pre>";
-            print_r($e);
-            echo "\n</pre>";
-            exit;
+
+            return ['status' => 404, 'message' => $e->getMessage()];
 
         }
 
@@ -296,13 +297,72 @@ class UserController extends ActiveController
             $model = new UserDetailsForm();
             $data = $model->findAllByID(Yii::$app->user->id);
             if ($data) {
-                return ['status' => 200, 'data' => $data,'message'=> 'user details for profile'];
-            }else {
+                return ['status' => 200, 'data' => $data, 'message' => 'user details for profile'];
+            } else {
                 # code...
-                return ['status' => 200, 'data' => $data,'message' => $model->errors];
+                return ['status' => 200, 'data' => $data, 'message' => $model->errors];
             }
         } catch (\Exception $e) {
             return ['status' => 500, 'message' => $e->getMessage()];
         }
     }
+    public function actionAddUser()
+    {
+        try {
+            $user = new User();
+            $data = Yii::$app->request->post();
+            if ($data['is_new']) {
+                $user->username = $data['username'];
+                $user->email = $data['email'];
+                $user->dob = $data['dob'];
+                $user->gender = $data['gender'];
+                $user->country_code = $data['country_code'];
+                $user->phone_number = $data['phone_number'];
+                $user->country = $data['country'];
+                $user->role = 'user';
+
+
+                if ($user->save()) {
+                    return ['status' => 200, 'data' => $data, 'message' => 'user data added successfully'];
+                } else {
+                    return ['status' => 200, 'data' => $data, 'message' => $user->errors];
+                }
+            } else {
+                return ['status' => 500, 'data' => null, 'message' => 'enable access api'];
+            }
+        } catch (\Exception $e) {
+            return ['status' => 500, 'message' => $e->getMessage()];
+        }
+    }
+    public function actionUpdateUser()
+    {
+        try {
+            // Find the existing user by ID
+            $user = User::findOne(Yii::$app->user->id);
+
+            if ($user !== null) {
+                $data = Yii::$app->request->post();
+
+                // Update user attributes with new data
+                $user->username = $data['username'];
+                $user->email = $data['email'];
+                $user->dob = $data['dob'];
+                $user->gender = $data['gender'];
+                $user->country_code = $data['country_code'];
+                $user->phone_number = $data['phone_number'];
+                $user->country = $data['country'];
+
+                if ($user->save()) {
+                    return ['status' => 200, 'data' => $data, 'message' => 'User data updated successfully'];
+                } else {
+                    return ['status' => 200, 'data' => $data, 'message' => $user->errors];
+                }
+            } else {
+                return ['status' => 404, 'message' => 'User not found'];
+            }
+        } catch (\Exception $e) {
+            return ['status' => 500, 'message' => $e->getMessage()];
+        }
+    }
+
 }
