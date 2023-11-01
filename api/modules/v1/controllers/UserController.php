@@ -5,6 +5,7 @@ namespace app\modules\v1\controllers;
 use Yii;
 use app\filters\auth\HttpBearerAuth;
 use app\models\LoginForm;
+use common\models\EmergencyContact;
 use app\models\UserDetailsForm;
 use yii\filters\AccessControl;
 use yii\filters\auth\CompositeAuth;
@@ -15,13 +16,10 @@ use yii\helpers\ArrayHelper;
 
 use common\models\SkillsSearch;
 use common\models\HealthcareQualificationSearch;
-use Firebase\JWT\JWT;
 use common\models\Userotp;
-use yii\web\Response;
-use yii\behaviors\TimestampBehavior;
-use yii\db\Expression;
 use common\models\User;
 use common\models\Images;
+use common\models\UserDetails;
 use yii\web\UploadedFile;
 
 class UserController extends ActiveController
@@ -85,6 +83,7 @@ class UserController extends ActiveController
                 'get-profile' => ['get'],
                 'add-user' => ['post'],
                 'update-user' => ['post'],
+                'emergency-contact' => ['post'],
             ]
         ];
         // re-add authentication filter
@@ -109,7 +108,7 @@ class UserController extends ActiveController
             'rules' => [
                 [
                     'allow' => true,
-                    'actions' => [''],
+                    'actions' => ['emergency-contact'],
                     'roles' => ['user'],
                 ],
                 [
@@ -123,6 +122,46 @@ class UserController extends ActiveController
 
         return $behaviors;
     }
+
+    public function actionEmergencyContact()
+    {
+        $Contactdata =  Yii::$app->request->post();
+        $userID = Yii::$app->user->id;
+        $total = count($Contactdata['data']);
+        $i = 0;
+        if($total > 0){
+            foreach ($Contactdata['data'] as $postData) {
+                $model = EmergencyContact::findOne(['user_id' => $userID,'relationship' => $postData['EmergencyContact']['relationship'],'phone' => $postData['EmergencyContact']['phone']]);
+                if(!$model){
+                    $model = new EmergencyContact();
+                }
+                $model->user_id = $userID;
+                if ($model->load($postData)){
+                    $model->phone = $model->phone;
+                    if ($model->save()) {
+                        $i++;
+                    }else{
+                        return array('status' => false, 'message' => Yii::$app->general->error($model->errors));
+                    }
+                } 
+              
+            }
+        }else{
+            return array('status' => false, 'message' => 'Please insert Data');
+        }
+        if($total == $i){
+            return array('status' => true, 'message' => 'Contacts Added');
+        }else{
+            return array('status' => true, 'message' => 'Please proper Data', 'data' => $Contactdata['data'][$i - 1]);
+        }
+        // else {
+        //     return array('status' => false, 'message' => $model->errors ? Yii::$app->general->error($model->errors) : 'Please insert Data');
+        // }
+
+
+
+    }
+
 
     public function actionTest()
     {
@@ -210,7 +249,7 @@ class UserController extends ActiveController
                         $user = $model->getUser();
                         return Yii::$app->commonuser->makelogin($user);
                     }
-                    return array('status' => false, 'message' => 'otp verify', 'data' => '');
+                    return array('status' => false, 'message' => 'otp verify', 'data' => ['is_new'=> true]);
                 } else {
                     return array('status' => true, 'message' => Yii::$app->general->error($model->errors));
                 }

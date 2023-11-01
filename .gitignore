@@ -1,3 +1,6 @@
 vendor
 .vscode
 api/runtime/debug
+api/runtime/cache/68/68dff88ab86e43ac2c3d86f1d3af95d6.bin
+api/runtime/gii-2.0.49.2/yii-gii-generators-model-Generator.json
+.gitignore

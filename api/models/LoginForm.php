@@ -6,8 +6,6 @@ use common\models\Userotp;
 use common\models\User;
 use Yii;
 use yii\base\Model;
-use yii\validators\RequiredValidator;
-
 use lajax\translatemanager\helpers\Language as Lx;
 
 /**
@@ -68,7 +66,7 @@ class LoginForm extends Model
             if($findUser){
                 if($this->validate()){
                     $this->_user = $findUser;
-                    return Yii::$app->user->login($findUser,1);
+                    return Yii::$app->user->login($findUser,0);
     
                 }else {
                     $this->addError('login', "that phone number you've entered doesn't match any account.");

@@ -48,12 +48,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return 'user';
     }
-    public function behaviors()
-    {
-        return [
-            TimestampBehavior::class,
-        ];
-    }
+
     /**
      * {@inheritdoc}
      */
@@ -71,6 +66,23 @@ class User extends ActiveRecord implements IdentityInterface
             [['username'], 'unique'],
             [['email'], 'unique'],
             [['password_reset_token'], 'unique'],
+        ];
+    }
+
+    public function behaviors()
+    {
+        return [           
+            'timestamp' => [
+                'class' => 'yii\behaviors\TimestampBehavior',
+                'attributes' => [
+                   ActiveRecord::EVENT_BEFORE_INSERT => ['created_at','updated_at'],
+                   ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                ],
+            ],
+            [
+                'class' => \yii\behaviors\BlameableBehavior::className(),
+                'createdByAttribute' => 'created_at',
+            ],
         ];
     }
 
