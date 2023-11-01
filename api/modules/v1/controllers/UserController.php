@@ -319,17 +319,7 @@ class UserController extends ActiveController
             $user = new User();
             $data = Yii::$app->request->post();
             if ($data['is_new']) {
-                $user->username = $data['username'];
-                $user->email = $data['email'];
-                $user->dob = $data['dob'];
-                $user->gender = $data['gender'];
-                $user->country_code = $data['country_code'];
-                $user->phone_number = $data['phone_number'];
-                $user->country = $data['country'];
-                $user->role = 'user';
-
-
-                if ($user->save()) {
+                if ($user->saveUser($data)) {
                     return ['status' => 200, 'data' => $data, 'message' => 'user data added successfully'];
                 } else {
                     return ['status' => 200, 'data' => $data, 'message' => $user->errors];
@@ -346,19 +336,9 @@ class UserController extends ActiveController
         try {
             // Find the existing user by ID
             $user = User::findOne(Yii::$app->user->id);
-
             if ($user !== null) {
                 $data = Yii::$app->request->post();
-
-                // Update user attributes with new data
-                $user->username = $data['username'];
-                $user->email = $data['email'];
-                $user->dob = $data['dob'];
-                $user->gender = $data['gender'];
-                $user->country_code = $data['country_code'];
-                $user->phone_number = $data['phone_number'];
-                $user->country = $data['country'];
-
+                $user->attributes = $data;
                 if ($user->save()) {
                     return ['status' => 200, 'data' => $data, 'message' => 'User data updated successfully'];
                 } else {

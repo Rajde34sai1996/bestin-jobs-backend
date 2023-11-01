@@ -435,6 +435,12 @@ class User extends ActiveRecord implements IdentityInterface
         $this->access_token = $tokens[0];   // Token
         $this->access_token_expired_at = $tokens[1]['exp']; // Expire
     }
-
-
+    public function saveUser($data){
+        $this->attributes = $data;
+        $this->role='user';
+        if($this->save()){
+            return true;
+        }
+        return false;
+    }
 }
