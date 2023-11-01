@@ -71,17 +71,13 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function behaviors()
     {
-        return [           
+        return [
             'timestamp' => [
                 'class' => 'yii\behaviors\TimestampBehavior',
                 'attributes' => [
-                   ActiveRecord::EVENT_BEFORE_INSERT => ['created_at','updated_at'],
-                   ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
                 ],
-            ],
-            [
-                'class' => \yii\behaviors\BlameableBehavior::className(),
-                'createdByAttribute' => 'created_at',
             ],
         ];
     }
@@ -447,12 +443,14 @@ class User extends ActiveRecord implements IdentityInterface
         $this->access_token = $tokens[0];   // Token
         $this->access_token_expired_at = $tokens[1]['exp']; // Expire
     }
-    public function saveUser($data){
-        $this->attributes = $data;
-        $this->role='user';
-        if($this->save()){
-            return true;
-        }
-        return false;
+    public function saveUser($avatar)
+    {
+
+        $uploadPath = Yii::$app->params['uploadPath'];
+        
+        $filename = uniqid() . '.' . $avatar->extension;
+        $filePath = $uploadPath . $filename;
+        return $filePath;
+        // Save the file path to the 'avatar' attribute in the database if needed
     }
 }

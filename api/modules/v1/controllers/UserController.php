@@ -357,15 +357,19 @@ class UserController extends ActiveController
         try {
             $user = new User();
             $data = Yii::$app->request->post();
-            if ($data['is_new']) {
-                if ($user->saveUser($data)) {
-                    return ['status' => 200, 'data' => $data, 'message' => 'user data added successfully'];
-                } else {
-                    return ['status' => 200, 'data' => $data, 'message' => $user->errors];
-                }
-            } else {
-                return ['status' => 500, 'data' => null, 'message' => 'enable access api'];
+            $file = UploadedFile::getInstanceByName('avatar');
+            $user->role = 'user'; // 'avatar' should be the name attribute of your file input in the form
+            if ($file) {
+                $user->profile_pic = $user->saveUser($file);
+                $file->saveAs($user->profile_pic);
             }
+            if ($user->load($data) && $user->save()) {
+                return ['status' => 200, 'data' => $user->attributes, 'message' => 'user data added successfully'];
+            } else {
+                return array('status' => true, 'message' => Yii::$app->general->error($user->errors));
+
+            }
+
         } catch (\Exception $e) {
             return ['status' => 500, 'message' => $e->getMessage()];
         }
@@ -378,7 +382,7 @@ class UserController extends ActiveController
             if ($user !== null) {
                 $data = Yii::$app->request->post();
                 $user->attributes = $data;
-                if ($user->save()) {
+                if ($user->validate() && $user->save()) {
                     return ['status' => 200, 'data' => $data, 'message' => 'User data updated successfully'];
                 } else {
                     return ['status' => 200, 'data' => $data, 'message' => $user->errors];

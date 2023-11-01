@@ -31,11 +31,12 @@ use yii\web\UploadedFile;
 class CommonUser extends \yii\base\Component
 {
 
-    public function makelogin($user, $type = false, $extra_data = array()){
-        
+    public function makelogin($user, $type = false, $extra_data = array())
+    {
+
         if ($user->status == User::STATUS_ACTIVE || $user->status == User::STATUS_INACTIVE) {
             if ($user->status == User::STATUS_INACTIVE) {
-                $disable_user =  User::findOne($user->id);
+                $disable_user = User::findOne($user->id);
                 $disable_user->status = User::STATUS_ACTIVE;
                 if (!$disable_user->save(false)) {
                     return array('status' => false, 'message' => Yii::$app->general->error($disable_user->errors));
@@ -55,14 +56,15 @@ class CommonUser extends \yii\base\Component
             $data['setting'] = $user->setting;
             $data['profile_pic'] = $user->profile_pic;
             $data['access_token'] = $user->access_token;
+            $data['is_new'] = false;
+            $data['step'] = 1;
 
-            return  [
-                'status'    => true,
-                'message'   => 'Login Successful',
-                'data'      => $data,
+            return [
+                'status' => true,
+                'message' => 'Login Successful',
+                'data' => $data,
             ];
-        }
-         else if ($user->status == User::STATUS_PENDING) {
+        } else if ($user->status == User::STATUS_PENDING) {
             // $SignupForm = new SignupForm();
             // $data = $this->sendOtp($user);
             // if($data['status']){
@@ -74,8 +76,7 @@ class CommonUser extends \yii\base\Component
             // }else{
             //     return $data;
             // }
-        }
-         else if ($user->status == User::STATUS_DELETED) {
+        } else if ($user->status == User::STATUS_DELETED) {
             return [
                 'status' => false,
                 'message' => 'Your account was deleted.'
@@ -87,5 +88,5 @@ class CommonUser extends \yii\base\Component
             ];
         }
     }
-   
+
 }
