@@ -55,37 +55,31 @@ class UserDetailsForm extends Model
     public function Add_Profile()
     {
         if ($this->validate()) {
-            if ($this->work_preference) {
-                $workpreference =   explode(" ",$this->work_preference);
-                foreach ($workpreference as $key => $work) {
-                    # code...
-                    $WorkPreff = WorkPreference::findOne(['user_id' => $this->user_id, 'selected_preference' => $work]);
-                    if (!$WorkPreff) {
-                        $WorkPreff = new WorkPreference();
-                        $WorkPreff->user_id = $this->user_id;
-                        $WorkPreff->selected_preference = $work;
-                        $WorkPreff->save();
-                    }
-                    if ($this->work_preference) {
-                        $WorkPreff->selected_preference = $work;
-                        $WorkPreff->save();
+            $model = new UserDetails();
+            $model->attributes = $this->attributes;
+
+            if ($model->save()) {
+                if ($this->work_preference) {
+                    $workPreferences = explode(",", $this->work_preference);
+                    foreach ($workPreferences as $work) {
+                        $workPref = WorkPreference::findOne(['user_id' => $this->user_id, 'selected_preference' => $work]);
+                        if (!$workPref) {
+                            $workPref = new WorkPreference();
+                            $workPref->user_id = $this->user_id;
+                            $workPref->selected_preference = $work;
+                            $workPref->save();
+                        }
                     }
                 }
-             
-            }
-
-            if ($this->save()) {
                 return true; // Successfully inserted
             } else {
+                Yii::error('Failed to save UserDetails: ' . print_r($model->errors, true));
                 return false; // Failed to insert
             }
-
         } else {
             Yii::error('Validation failed: ' . print_r($this->errors, true));
             return false; // Validation failed
         }
-
-
     }
     public function findAllByID($id)
     {

@@ -281,16 +281,16 @@ class UserController extends ActiveController
     {
         try {
             $user_id = null;
+            $model = new UserDetailsForm();
             if (Yii::$app->user->id) {
                 $user_id = Yii::$app->user->id;
                 $model = UserDetails::findOne(['user_id' => $user_id]);
-                if (!$model) {
-                    $model = new UserDetailsForm();
-                    if ($model->validate() && $model->Add_Profile()) {
-                        return ['status' => 200, 'message' => 'Profile Data Successfully Added.'];
-                    } else {
-                        return ['status' => 500, 'message' => $model->errors];
-                    }
+            }
+            if ($model->load(Yii::$app->request->post())) {
+                if ($model->validate() && $model->Add_Profile()) {
+                    return ['status' => 200, 'message' => 'Profile Data Successfully Added.'];
+                } else {
+                    return ['status' => 500, 'message' => $model->errors];
                 }
             }
 
