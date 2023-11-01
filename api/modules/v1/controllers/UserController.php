@@ -125,34 +125,34 @@ class UserController extends ActiveController
 
     public function actionEmergencyContact()
     {
-        $Contactdata =  Yii::$app->request->post();
+        $Contactdata = Yii::$app->request->post();
         $userID = Yii::$app->user->id;
         $total = count($Contactdata['data']);
         $i = 0;
-        if($total > 0){
+        if ($total > 0) {
             foreach ($Contactdata['data'] as $postData) {
-                $model = EmergencyContact::findOne(['user_id' => $userID,'relationship' => $postData['EmergencyContact']['relationship'],'phone' => $postData['EmergencyContact']['phone']]);
-                if(!$model){
+                $model = EmergencyContact::findOne(['user_id' => $userID, 'relationship' => $postData['EmergencyContact']['relationship'], 'phone' => $postData['EmergencyContact']['phone']]);
+                if (!$model) {
                     $model = new EmergencyContact();
                 }
                 $model->user_id = $userID;
-                if ($model->load($postData)){
+                if ($model->load($postData)) {
                     $model->phone = $model->phone;
                     if ($model->save()) {
                         $i++;
-                    }else{
-                        return array('status' => false, 'message' => Yii::$app->general->error($model->errors));
+                    } else {
+                        return array('success' => false, 'message' => Yii::$app->general->error($model->errors));
                     }
-                } 
-              
+                }
+
             }
-        }else{
-            return array('status' => false, 'message' => 'Please insert Data');
+        } else {
+            return array('success' => false, 'message' => 'Please insert Data');
         }
-        if($total == $i){
-            return array('status' => true, 'message' => 'Contacts Added');
-        }else{
-            return array('status' => true, 'message' => 'Please proper Data', 'data' => $Contactdata['data'][$i - 1]);
+        if ($total == $i) {
+            return array('success' => true, 'message' => 'Contacts Added');
+        } else {
+            return array('success' => true, 'message' => 'Please proper Data', 'data' => $Contactdata['data'][$i - 1]);
         }
         // else {
         //     return array('status' => false, 'message' => $model->errors ? Yii::$app->general->error($model->errors) : 'Please insert Data');
@@ -216,15 +216,15 @@ class UserController extends ActiveController
                 $otp->phone_number = $data['phone_number'];
                 $otp->otp = $otpdata;
                 if ($otp->save()) {
-                    return ['message' => 'OTP sent successfully.', 'data' => ['otp' => $otpdata, 'is_old' => false]];
+                    return ['success' => true, 'message' => 'OTP sent successfully.', 'data' => ['otp' => $otpdata, 'is_old' => false]];
                 } else {
-                    return ['message' => $otp->errors];
+                    return ['success' => true, 'message' => $otp->errors];
                 }
 
             } else {
                 $userOtp->otp = $otpdata;
                 $userOtp->save();
-                return ['message' => 'OTP sent successfully.', 'data' => ['otp' => $otpdata, 'is_old' => true]];
+                return ['success' => true, 'message' => 'OTP sent successfully.', 'data' => ['otp' => $otpdata, 'is_old' => true]];
             }
 
         } catch (\Exception $e) {
@@ -249,16 +249,15 @@ class UserController extends ActiveController
                         $user = $model->getUser();
                         return Yii::$app->commonuser->makelogin($user);
                     }
-                    return array('status' => false, 'message' => 'otp verify', 'data' => ['is_new'=> true]);
+                    return array('success' => true, 'message' => 'otp verify', 'data' => ['is_new' => true]);
                 } else {
-                    return array('status' => true, 'message' => Yii::$app->general->error($model->errors));
+                    return array('success' => false, 'message' => Yii::$app->general->error($model->errors));
                 }
             } else {
-                return array('status' => false, 'message' => 'Login Credentials Are Not Found !');
+                return array('success' => false, 'message' => 'Login Credentials Are Not Found !');
             }
         } catch (\Throwable $e) {
-            Yii::$app->general->createLogFile($e);
-            return array('status' => false, 'message' => $e->getMessage());
+            return array('success' => false, 'message' => $e->getMessage());
         }
 
     }
@@ -327,14 +326,14 @@ class UserController extends ActiveController
             }
             if ($model->load(Yii::$app->request->post())) {
                 if ($model->validate() && $model->Add_Profile()) {
-                    return ['status' => 200, 'message' => 'Profile Data Successfully Added.'];
+                    return ['success' => true, 'message' => 'Profile Data Successfully Added.'];
                 } else {
-                    return ['status' => 500, 'message' => $model->errors];
+                    return ['success' => false, 'message' => $model->errors];
                 }
             }
 
         } catch (\Exception $e) {
-            return ['status' => 404, 'message' => $e->getMessage()];
+            return ['success' => false, 'message' => $e->getMessage()];
         }
     }
     public function actionGetProfile()
@@ -364,14 +363,14 @@ class UserController extends ActiveController
                 $file->saveAs($user->profile_pic);
             }
             if ($user->load($data) && $user->save()) {
-                return ['status' => 200, 'data' => $user->attributes, 'message' => 'user data added successfully'];
+                return ['success' => true, 'data' => $user->attributes, 'message' => 'user data added successfully'];
             } else {
-                return array('status' => true, 'message' => Yii::$app->general->error($user->errors));
+                return array('success' => false, 'message' => Yii::$app->general->error($user->errors));
 
             }
 
         } catch (\Exception $e) {
-            return ['status' => 500, 'message' => $e->getMessage()];
+            return ['success' => false, 'message' => $e->getMessage()];
         }
     }
     public function actionUpdateUser()
@@ -383,15 +382,15 @@ class UserController extends ActiveController
                 $data = Yii::$app->request->post();
                 $user->attributes = $data;
                 if ($user->validate() && $user->save()) {
-                    return ['status' => 200, 'data' => $data, 'message' => 'User data updated successfully'];
+                    return ['success' => 200, 'data' => $data, 'message' => 'User data updated successfully'];
                 } else {
-                    return ['status' => 200, 'data' => $data, 'message' => $user->errors];
+                    return ['success' => 200, 'data' => $data, 'message' => $user->errors];
                 }
             } else {
-                return ['status' => 404, 'message' => 'User not found'];
+                return ['success' => 404, 'message' => 'User not found'];
             }
         } catch (\Exception $e) {
-            return ['status' => 500, 'message' => $e->getMessage()];
+            return ['success' => 500, 'message' => $e->getMessage()];
         }
     }
 

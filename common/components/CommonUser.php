@@ -60,7 +60,7 @@ class CommonUser extends \yii\base\Component
             $data['step'] = 1;
 
             return [
-                'status' => true,
+                'success' => true,
                 'message' => 'Login Successful',
                 'data' => $data,
             ];
@@ -69,7 +69,7 @@ class CommonUser extends \yii\base\Component
             // $data = $this->sendOtp($user);
             // if($data['status']){
             return [
-                'status' => true,
+                'success' => true,
                 'message' => 'Your account is not Active. Please Active.',
                 // 'data'=> [ 'on_verification' => 1 ]
             ];
@@ -78,12 +78,12 @@ class CommonUser extends \yii\base\Component
             // }
         } else if ($user->status == User::STATUS_DELETED) {
             return [
-                'status' => false,
+                'success' => false,
                 'message' => 'Your account was deleted.'
             ];
         } else {
             return [
-                'status' => false,
+                'success' => false,
                 'message' => 'Status is invalid.'
             ];
         }
