@@ -54,40 +54,32 @@ class UserDetailsForm extends Model
     }
     public function Add_Profile()
     {
-
         if ($this->validate()) {
-            $userDetails = UserDetails::findOne(['user_id' => $this->user_id]);
-            $WorkPreff = WorkPreference::findOne(['user_id' => $this->user_id, 'selected_preference' => $this->work_preference]);
-            if (!$userDetails) {
-                // If no record found, create a new one
-                $userDetails = new UserDetails();
-                $userDetails->user_id = $this->user_id;
-            }
-            if (!$WorkPreff) {
-                $WorkPreff = new WorkPreference();
-                $WorkPreff->user_id = $this->user_id;
-                $WorkPreff->selected_preference = $this->work_preference;
-            }
             if ($this->work_preference) {
-                $WorkPreff->selected_preference = $this->work_preference;
+                $workpreference =   explode(" ",$this->work_preference);
+                foreach ($workpreference as $key => $work) {
+                    # code...
+                    $WorkPreff = WorkPreference::findOne(['user_id' => $this->user_id, 'selected_preference' => $work]);
+                    if (!$WorkPreff) {
+                        $WorkPreff = new WorkPreference();
+                        $WorkPreff->user_id = $this->user_id;
+                        $WorkPreff->selected_preference = $work;
+                        $WorkPreff->save();
+                    }
+                    if ($this->work_preference) {
+                        $WorkPreff->selected_preference = $work;
+                        $WorkPreff->save();
+                    }
+                }
+             
             }
-            $userDetails->experience_level = $this->experience_level;
-            $userDetails->working_time = $this->working_time;
-            $userDetails->distance_level = $this->distance_level;
-            $userDetails->whatsapp_number = $this->whatsapp_number;
-            $userDetails->uk_driving_license_number = $this->uk_driving_license_number;
-            $userDetails->dbs_number = $this->dbs_number;
-            $userDetails->skill_id = $this->skill_id;
-            $userDetails->qualification_id = $this->qualification_id;
-            $userDetails->national_insurance_number = $this->national_insurance_number;
-            $userDetails->experience_month = $this->experience_month;
 
-            if ($userDetails->save() && $WorkPreff->save()) {
+            if ($this->save()) {
                 return true; // Successfully inserted
             } else {
-                Yii::error('Failed to insert user details: ' . print_r($userDetails->errors, true));
                 return false; // Failed to insert
             }
+
         } else {
             Yii::error('Validation failed: ' . print_r($this->errors, true));
             return false; // Validation failed
