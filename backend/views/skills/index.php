@@ -66,30 +66,21 @@ $this->params['breadcrumbs'][] = $this->title;
                     'filter' => Html::activeTextInput($searchModel, 'name', ['class' => 'form-control']),
                 ],
                 [
-                    'attribute' => 'status',
-                    'format' => 'raw',
-                    'value' => function ($model) {
-                        $class = $model->status === 'active' ? 'active' : 'deactive';
-                                    return Html::a($model->status === 'active' ? '<i data-feather="check-square" class="w-4 h-4 mr-1"></i> Active ' : '<i data-feather="check-square" class="w-4 h-4 mr-1"></i> Deactive', ['status', 'id' => $model['status']], [
-                                        'title' => Yii::t('app', 'status'),
-                                        'class' => $class,
-                                    ]);
-                            },
+                    'attribute'=>'status',
+                    'format'=>'raw',
+                    'filter' => false,
+                    'value'=>function($model){
+                        $ischeck = $model->status === 'active' ? 'checked': '';
+                        $class = $model->status === 'active' ? 'active': 'deactive';
+                        return ' <label for="switchA1" class="switch-item">
+                        <input type="checkbox" data-id="'.$model->id.'" name="" class="control" '.$ischeck.'>
+                      </label>';
+                    }
                 ],
-        
-                // 'created_at',
-                // 'updated_at',
                 [
                     'class' => 'yii\grid\ActionColumn',
                     'header' => 'Actions',
                     'buttons' => [
-                        // 'status' => function ($url, $model, $key) {
-                        //             $class = $model->status === 'active' ? 'active' : 'deactive';
-                        //             return Html::a($model->status === 'active' ? '<i data-feather="check-square" class="w-4 h-4 mr-1"></i> Active ' : '<i data-feather="check-square" class="w-4 h-4 mr-1"></i> Deactive', ['status', 'id' => $model['status']], [
-                        //                 'title' => Yii::t('app', 'status'),
-                        //                 'class' => $class,
-                        //             ]);
-                        //         },
                         'update' => function ($url, $model) {
                                     return Html::a('<i data-feather="check-square" class="w-4 h-4 mr-1"></i> Edit ', ['update', 'id' => $model['id']], [
                                         'title' => Yii::t('app', 'Update'),
@@ -109,10 +100,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                     'template' => '<div style="display:flex;gap:3rem">{status}{update}{delete}</div>',
                 ],
-                // ['class' => 'yii\grid\ActionColumn'],
             ],
 
-            // 'filterModel' => $searchModel,
         ]); ?>
        <?php Pjax::end(); ?> <!-- End the Pjax container for the GridView -->
       

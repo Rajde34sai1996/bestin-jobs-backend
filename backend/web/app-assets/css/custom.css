@@ -1066,3 +1066,30 @@ td.select_gender select, td.select_usertype select, td.select_is_promotional sel
   padding: 30px 0;
   color: #f28744;
 }
+/* form-switch Css  */
+.wrap {display: flex; flex-direction: column; height: 100%; align-items: center; justify-content: center;}
+.switch-item {display: block;}
+.switch-item .label {margin-left: 4px; vertical-align: middle; font-size: 16px; color: #000;}
+.switch-item .control[type='checkbox'] {
+  appearance: none;
+  position: relative;
+  width: 40px;
+  height: 25px;
+  padding: 3px;
+  border-radius: 34px;
+  background-color: #aaa;
+  vertical-align: middle;
+  transition: all .3s cubic-bezier(.4, 0, .1, 1.4);
+}
+.switch-item .control[type='checkbox']:after {content: ''; position: relative; display: block; left: 0; width: 60.9%; height: 100%; border-radius: 28px; background-color: #fff; transition: left .3s cubic-bezier(0.175, 0.885, 0.32, 1.275), padding .3s ease, margin .3s ease; box-sizing: content-box;}
+.switch-item .control[type='checkbox']:active:after {padding-right: 8px;}
+.switch-item .control[type='checkbox']:checked {background-color: #4e99ff;}
+.switch-item .control[type='checkbox']:checked:after {left: 39.1%;}
+.switch-item .control[type='checkbox']:checked:active:after {margin-left: -8px;}
+.switch-item .control[type='checkbox'] ~ .label:before {content: 'OFF';}
+.switch-item .control[type='checkbox']:checked ~ .label:before {content: 'ON';}
+.switch-item .control[type='checkbox']:disabled {opacity: .3;}
+.switch-item .control[type='checkbox']:disabled:active:after {padding-right: 0; margin-left: 0;}
+
+
+/* End  form-switch Css  */
