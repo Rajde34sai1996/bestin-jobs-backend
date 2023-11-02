@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\widgets\Pjax;
 
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\SkillsSearch */
@@ -39,16 +40,15 @@ $this->params['breadcrumbs'][] = $this->title;
     justify-content: space-between;">
         <?= Html::a('Create CMS', ['create'], ['class' => 'mylink']) ?>
     
-       <input type='search' name='SkillsSearch[name]' class='form-control' placeholder='Search by name'/>
+       <input type='search' name='CmsSearch[title]' class='form-control' placeholder='Search by title'/>
 
        
     </p>
-
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
     <div class="">
-   
+        <?php Pjax::begin(); ?> <!-- Start the Pjax container for the GridView -->
         <?= GridView::widget([
             'dataProvider' => $dataProvider,
+            'filterModel' => $searchModel,
             'rowOptions' => function ($model, $key, $index, $grid) {
                         $class = $index % 2 === 0 ? 'even-row-class' : 'odd-row-class';
                         return ['class' => $class];
@@ -60,34 +60,18 @@ $this->params['breadcrumbs'][] = $this->title;
                     'class' => 'yii\grid\SerialColumn',
                     'header' => 'Id',
                 ],
-                // 'id',
-                'title',
-                'slug', 
-                // [
-                //     'attribute' => 'status',
-                //     'format' => 'raw',
-                //     'value' => function ($model) {
-                //         $class = $model->status === 'active' ? 'active' : 'deactive';
-                //                     return Html::a($model->status === 'active' ? '<i data-feather="check-square" class="w-4 h-4 mr-1"></i> Active ' : '<i data-feather="check-square" class="w-4 h-4 mr-1"></i> Deactive', ['status', 'id' => $model['status']], [
-                //                         'title' => Yii::t('app', 'status'),
-                //                         'class' => $class,
-                //                     ]);
-                //             },
-                // ],
-        
-                // 'created_at',
-                // 'updated_at',
+                [
+                    'attribute' => 'title',
+                    'filter' => Html::activeTextInput($searchModel, 'title', ['class' => 'form-control']),
+                ],
+                [
+                    'attribute' => 'slug',
+                    'filter' => Html::activeTextInput($searchModel, 'slug', ['class' => 'form-control']),
+                ],
                 [
                     'class' => 'yii\grid\ActionColumn',
                     'header' => 'Actions',
                     'buttons' => [
-                        // 'status' => function ($url, $model, $key) {
-                        //             $class = $model->status === 'active' ? 'active' : 'deactive';
-                        //             return Html::a($model->status === 'active' ? '<i data-feather="check-square" class="w-4 h-4 mr-1"></i> Active ' : '<i data-feather="check-square" class="w-4 h-4 mr-1"></i> Deactive', ['status', 'id' => $model['status']], [
-                        //                 'title' => Yii::t('app', 'status'),
-                        //                 'class' => $class,
-                        //             ]);
-                        //         },
                         'update' => function ($url, $model) {
                                     return Html::a('<i data-feather="check-square" class="w-4 h-4 mr-1"></i> Edit ', ['update', 'id' => $model['id']], [
                                         'title' => Yii::t('app', 'Update'),
@@ -107,12 +91,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                     'template' => '<div style="display:flex;gap:3rem">{status}{update}{delete}</div>',
                 ],
-                // ['class' => 'yii\grid\ActionColumn'],
             ],
-
-            // 'filterModel' => $searchModel,
         ]); ?>
-      
+       <?php Pjax::end(); ?> <!-- End the Pjax container for the GridView -->
     </div>
 
 
