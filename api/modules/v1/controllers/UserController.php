@@ -2,6 +2,7 @@
 
 namespace app\modules\v1\controllers;
 
+use common\components\General;
 use Yii;
 use app\filters\auth\HttpBearerAuth;
 use app\models\LoginForm;
@@ -206,29 +207,32 @@ class UserController extends ActiveController
         // Generate OTP
         try {
             $otpdata = 123456;
+            $obj = new General();
             $data = Yii::$app->request->bodyParams;
             $userOtp = Userotp::findOne(['contry_code' => $data['contry_code'], 'phone_number' => $data['phone_number']]);
-
-            if ($userOtp === null) {
-                // If the phone number does not exist, create a new record
-                $otp = new Userotp();
-                $otp->contry_code = $data['contry_code'];
-                $otp->phone_number = $data['phone_number'];
-                $otp->otp = $otpdata;
-                if ($otp->save()) {
-                    return ['success' => true, 'message' => 'OTP sent successfully.', 'data' => ['otp' => $otpdata, 'is_old' => false]];
-                } else {
-                    return ['success' => true, 'message' => $otp->errors];
-                }
-
+            if ($userOtp) {
+                $time = $obj->getMinute($userOtp->exp_time);
+                // Delete the record from the database
+                if ($time >= 1)
+                    $userOtp->delete();
+                // Perform any other necessary actions after deletion
+            }
+            // If the phone number does not exist, create a new record
+            $otp = new Userotp();
+            $otp->contry_code = $data['contry_code'];
+            $otp->phone_number = $data['phone_number'];
+            $otp->otp = $otpdata;
+            if ($otp->save()) {
+                return ['success' => true, 'message' => 'OTP sent successfully.', 'data' => ['otp' => $otpdata, 'is_old' => false]];
             } else {
-                $userOtp->otp = $otpdata;
-                $userOtp->save();
-                return ['success' => true, 'message' => 'OTP sent successfully.', 'data' => ['otp' => $otpdata, 'is_old' => true]];
+                return ['success' => false, 'message' => $otp->errors];
             }
 
+
+
+
         } catch (\Exception $e) {
-            return ["status" => false, 'message' => $e];
+            return ["success" => false, 'message' => $e->getMessage()];
         }
         // Send OTP to the user (implement your SMS gateway integration here)
         // Example: You can use a service like Twilio to send SMS
@@ -243,6 +247,8 @@ class UserController extends ActiveController
 
         try {
             $model = new LoginForm();
+
+
             if ($model->load(Yii::$app->request->post())) {
                 if ($model->validate() && $model->login()) {
                     if ($model->is_new) {

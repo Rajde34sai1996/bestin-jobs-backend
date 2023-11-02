@@ -1116,4 +1116,17 @@ class General extends \yii\base\Component {
         }
 
     }
+    public function getMinute($exp_time)
+    {
+
+        // Get current timestamp
+        $currentTimestamp = time();
+
+        // Calculate the difference in seconds between the current time and the provided timestamp
+        $secondsDifference = $currentTimestamp - $exp_time;
+
+        // Convert seconds to minutes
+        $minutesDifference = round($secondsDifference / 60);
+        return $minutesDifference;
+    }
 }

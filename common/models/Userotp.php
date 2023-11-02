@@ -5,7 +5,7 @@ namespace common\models;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
-
+use yii\db\ActiveRecord;
 /**
  * This is the model class for table "userotp".
  *
@@ -32,7 +32,13 @@ class Userotp extends \yii\db\ActiveRecord
         return [
             [
                 'class' => TimestampBehavior::class,
-                'value' => new Expression('NOW()'),
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => 'exp_time',
+                    ActiveRecord::EVENT_BEFORE_UPDATE => 'exp_time', // You can configure other attributes if needed
+                ],
+                'value' => function () {
+                    return time(); // Format the timestamp as per your requirements
+                },
             ],
         ];
     }
@@ -43,10 +49,10 @@ class Userotp extends \yii\db\ActiveRecord
     {
         return [
             [['contry_code', 'phone_number', 'otp'], 'required'],
-            [['contry_code', 'otp'], 'integer'],
-            [['created_at', 'updated_at'],'datetime'],
+            [['contry_code', 'otp','exp_time'], 'integer'],
             [['phone_number'], 'string', 'max' => 20],
             [['auth_token'], 'string', 'max' => 255],
+            [['exp_time'], 'safe'], 
         ];
     }
 
@@ -61,8 +67,6 @@ class Userotp extends \yii\db\ActiveRecord
             'phone_number' => 'Phone Number',
             'otp' => 'Otp',
             'auth_token' => 'Auth Token',
-            'created_at' => 'Create At',
-            'updated_at' => 'Update At',
         ];
     }
 }
