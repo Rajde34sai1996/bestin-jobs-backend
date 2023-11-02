@@ -24,7 +24,7 @@ class SettingsController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['clear', 'index', 'view', 'delete', 'api','create'],
+                        'actions' => ['clear', 'index', 'view', 'delete', 'api','create','update'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],

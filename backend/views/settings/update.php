@@ -1,6 +1,5 @@
 <?php
 
-echo 111;die;
 use yii\helpers\Html;
 
 /** @var yii\web\View $this */
