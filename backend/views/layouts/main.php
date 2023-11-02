@@ -155,10 +155,7 @@ Start Scrapping Please Wait....
                   </div>
                   <div class="p-2">
                      <?php $id = (isset(Yii::$app->user->identity->id)) ? Yii::$app->user->identity->id : 0 ?>
-                     <a href="<?= Url::base(true).'/user/view?id='.$id.'&type=sa' ?>" class="flex items-center block p-2 transition duration-300 ease-in-out hover:bg-theme-1 rounded-md"> <i data-feather="user" class="w-4 h-4 mr-2"></i> Profile </a>
-                     <a href="javascript:;" class="flex items-center block p-2 transition duration-300 ease-in-out hover:bg-theme-1 rounded-md"> <i data-feather="edit" class="w-4 h-4 mr-2"></i> Add Account </a>
-                     <a href="<?= Url::base(true).'/user/view?id='.$id.'&type=sa' ?>" class="flex items-center block p-2 transition duration-300 ease-in-out hover:bg-theme-1 rounded-md"> <i data-feather="lock" class="w-4 h-4 mr-2"></i> Reset Password </a>
-                     <a href="<?= Url::base(true).'/help/index' ?>" class="flex items-center block p-2 transition duration-300 ease-in-out hover:bg-theme-1 rounded-md"> <i data-feather="help-circle" class="w-4 h-4 mr-2"></i> Help </a>
+                     <a href="<?= Url::base(true).'/settings/index'?>" class="flex items-center block p-2 transition duration-300 ease-in-out hover:bg-theme-1 rounded-md"> <i data-feather="settings" class="w-4 h-4 mr-2"></i> Settings </a>
                   </div>
                   <div class="p-2 border-t border-theme-40">
                      <a href="<?= Url::to(['/site/logout'], $schema = true) ?>" class="flex items-center block p-2 transition duration-300 ease-in-out hover:bg-theme-1 rounded-md"> <i data-feather="toggle-right" class="w-4 h-4 mr-2"></i> Logout </a>

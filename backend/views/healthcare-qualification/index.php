@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\widgets\Pjax;
 
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\SkillsSearch */
@@ -39,16 +40,19 @@ $this->params['breadcrumbs'][] = $this->title;
     justify-content: space-between;">
         <?= Html::a('Create Qualification', ['create'], ['class' => 'mylink']) ?>
     
-       <input type='search' name='SkillsSearch[name]' class='form-control' placeholder='Search by name'/>
 
        
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+    <?php Pjax::begin(); ?> <!-- Start the Pjax container for the GridView -->
+
     <div class="">
    
         <?= GridView::widget([
             'dataProvider' => $dataProvider,
+            'filterModel' => $searchModel,
+
             'rowOptions' => function ($model, $key, $index, $grid) {
                         $class = $index % 2 === 0 ? 'even-row-class' : 'odd-row-class';
                         return ['class' => $class];
@@ -61,7 +65,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     'header' => 'Id',
                 ],
                 // 'id',
-                'qualification_name',
+                [
+                    'attribute' => 'qualification_name',
+                    'filter' => Html::activeTextInput($searchModel, 'qualification_name', ['class' => 'form-control']),
+                ],
                 [
                     'attribute' => 'status',
                     'format' => 'raw',
@@ -111,6 +118,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             // 'filterModel' => $searchModel,
         ]); ?>
+       <?php Pjax::end(); ?> <!-- End the Pjax container for the GridView -->
       
     </div>
 

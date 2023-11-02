@@ -40,8 +40,6 @@ $this->params['breadcrumbs'][] = $this->title;
     justify-content: space-between;">
         <?= Html::a('Create CMS', ['create'], ['class' => 'mylink']) ?>
     
-       <input type='search' name='CmsSearch[title]' class='form-control' placeholder='Search by title'/>
-
        
     </p>
     <div class="">
