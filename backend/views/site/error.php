@@ -10,7 +10,7 @@ use yii\helpers\Html;
 $this->title = $name;
 ?>
 <div class="error-page flex flex-col lg:flex-row items-center justify-center h-screen text-center lg:text-left" style="    background: #399cff;
-    border-radius: 26px;">
+    border-radius: 26px;height:85%">
     <div class="-intro-x lg:mr-20">
         <img alt="Midone Tailwind HTML Admin Template" class="h-48 lg:h-auto"
             src="<?= Yii::$app->request->baseUrl; ?>/app-assets/images/error-illustration.svg">

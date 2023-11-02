@@ -73,7 +73,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         $ischeck = $model->status === 'active' ? 'checked': '';
                         $class = $model->status === 'active' ? 'active': 'deactive';
                         return ' <label for="switchA1" class="switch-item">
-                        <input type="checkbox" data-id="'.$model->id.'" name="" class="control" '.$ischeck.'>
+                        <input type="checkbox" data-id="'.$model->id.'" name="" class="control update-skill-status" '.$ischeck.' status='.$model->status.'>
                       </label>';
                     }
                 ],

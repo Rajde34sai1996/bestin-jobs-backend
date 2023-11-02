@@ -47,7 +47,7 @@ function defaultmenuActive($menu)
 <!-- BEGIN: Side Menu -->
 <nav class="side-nav">
   <a href="<?= Yii::$app->homeUrl ?>" class="intro-x flex items-center pl-5 pt-4">
-    <img alt="MICBT" src="<?= Yii::$app->request->baseUrl . '/../img_assets/app_logo.png' ?>" style="background-color: white;padding: 15px;border-radius: 10px;" class="hidden xl:block">
+    <img alt="MICBT" src="<?= Yii::$app->request->baseUrl . '/../img_assets/white_app_logo.png' ?>" style="padding: 15px;border-radius: 10px;" class="hidden xl:block">
   </a>
   <div class="side-nav__devider my-6"></div>
 

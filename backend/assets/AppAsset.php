@@ -41,6 +41,7 @@ class AppAsset extends AssetBundle
         
         // 'app-assets/js/image-zoom.js',
         'app-assets/js/modal.js',
+        'app-assets/js/bestinjob.js',
         // 'app-assets/js/svg-loader.js',
         // 'app-assets/js/toast.js',
 

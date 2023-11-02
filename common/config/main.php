@@ -16,6 +16,7 @@ return [
         ],
         'request' => [
             'enableCookieValidation' => false,
+            'enableCsrfValidation' => false,
             
         ],
         'general' => [

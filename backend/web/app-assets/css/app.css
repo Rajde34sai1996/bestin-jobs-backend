@@ -7068,7 +7068,7 @@ body {
 .content {
   border-radius: 30px;
   padding: 0px 22px;
-  min-height: 100vh;
+  min-height: 95vh;
   --bg-opacity: 1;
   background-color: #F1F5F8;
   background-color: rgba(241, 245, 248, var(--bg-opacity));

@@ -33,14 +33,9 @@ class SkillsController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'rules' => [                    
+                'rules' => [
                     [
-                        'actions' => ['create','update','delete','index','view'],
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                    [
-                        'actions' => ['index','update'],
+                        'actions' => ['create', 'update', 'delete', 'index', 'view', 'update-status'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -50,7 +45,8 @@ class SkillsController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
-                    'roles' => ['@'], 
+                    'update-status' => ['POST'],
+                    'roles' => ['@'],
                 ],
             ],
         ];
@@ -121,7 +117,26 @@ class SkillsController extends Controller
             'model' => $model,
         ]);
     }
+    public function actionUpdateStatus()
+    {
 
+        Yii::$app->controller->enableCsrfValidation = false;
+        $data = Yii::$app->request->post();
+        $status = $data['status'];
+        $model = $this->findModel($data['id']);
+        if($model){
+            if($status === 'deactive'){
+                $model->status = 'active';
+            }else{
+                $model->status = 'deactive';
+            }
+            if($model->update()){
+                echo "/n\$model->save()-ajay 💀<pre>"; print_r($model->update()); echo "\n</pre>";exit;
+            }else{
+                echo $model->errors;die;
+            }
+        }
+    }
     /**
      * Deletes an existing Skills model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
